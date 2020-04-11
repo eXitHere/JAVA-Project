@@ -61,7 +61,6 @@ public class UserUi {
     
     public final void initEdit(Stage primaryStage) throws FileNotFoundException{
         DatePicker datePicker = new DatePicker();
-        
         // <editor-fold defaultstate="collapsed" desc="Custom functions">
         datePicker.setConverter(new StringConverter<LocalDate>(){
             private DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("MM/dd/yyyy");
@@ -106,7 +105,6 @@ public class UserUi {
             }
         };
         // </editor-fold>;
-        
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         GridPane grid = new GridPane();
         Scene scene = new Scene(grid,550,650);
@@ -407,7 +405,6 @@ public class UserUi {
             // </editor-fold>;
 
         // </editor-fold>;
-        
         this.dialogEdit.setScene(scene);
     }
     

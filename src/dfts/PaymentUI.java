@@ -8,16 +8,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import static java.lang.Math.ceil;
 import java.lang.reflect.Array;
+import java.nio.charset.Charset;
 import static java.nio.file.Files.size;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -52,8 +55,14 @@ public class PaymentUI extends Application{
     private HBox hboxHeader = new HBox();
     private HBox hboxBottom = new HBox();
     private List<String> member = new ArrayList<>();
+    private Pair<String,String> otp;
+    //payment
+
+    public PaymentUI() {
+    }
     
-    public PaymentUI() throws FileNotFoundException {
+    
+    public PaymentUI(String _item,int _count,int _price) throws FileNotFoundException {
         loadMember();
         this.hboxHeader.setStyle("-fx-border-color: red; -fx-border-width: 1 1 1 1;");
         this.payment.setStyle("-fx-border-color: blue; -fx-border-width: 1 1 1 1;");
@@ -113,16 +122,31 @@ public class PaymentUI extends Application{
         btnPay.setStyle("-fx-background-color: linear-gradient(#148400, #23CC00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);");
         btnPay.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         btnPay.setPrefSize(150, 40);
-        HBox.setMargin(btnPay, new Insets(10, 10, 10, 612));
+        HBox.setMargin(btnPay, new Insets(10, 10, 10, 10));
         
-        this.hboxBottom.getChildren().addAll(infomationMember,hyperlink,btnPay);
+        Label otpLabel = new Label("รหัสอ้างอิง: ABCD");
+        otpLabel.setVisible(false);
+        otpLabel.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        otpLabel.setStyle("-fx-text-fill:white");
+        otpLabel.setPrefSize(100, 20);
+        HBox.setMargin(otpLabel, new Insets(20,5,10,342));
+        
+        TextField otpField = new TextField();
+        otpField.setVisible(false);
+        otpField.setPromptText("OTP");
+        otpField.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        otpField.setAlignment(Pos.CENTER);
+        otpField.setPrefSize(140, 35);
+        HBox.setMargin(otpField, new Insets(13,10,10,0));
+        
+        this.hboxBottom.getChildren().addAll(infomationMember,hyperlink,otpLabel,otpField,btnPay);
         
         //Payment
         this.vboxPayment.setPrefSize(1080,180 );
         //this.vboxPayment.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B);");
         this.vboxPayment.setAlignment(Pos.TOP_CENTER);
         
-        Label titlePayment = new Label("\nบริษัท DFTS จำกัด");
+        Label titlePayment = new Label("\nบริษัท Delicious Food Transit System (DFTS) จำกัด");
         titlePayment.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 25));
         titlePayment.setStyle("-fx-text-fill:black");
         
@@ -170,15 +194,15 @@ public class PaymentUI extends Application{
         GridPane.setHalignment(pricetList, javafx.geometry.HPos.CENTER);
         this.payment.add(pricetList, 2, 0);
         
-        Label itemsName = new Label("\nข้าวราดแกง");
+        Label itemsName = new Label(String.format("\n     %s", _item));
         itemsName.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         itemsName.setStyle("-fx-text-fill:black");
         itemsName.setAlignment(Pos.CENTER);
-        GridPane.setHalignment(itemsName, javafx.geometry.HPos.CENTER);
+        //GridPane.setHalignment(itemsName, javafx.geometry.HPos.CENTER);
         GridPane.setValignment(itemsName, javafx.geometry.VPos.TOP);
         this.payment.add(itemsName, 0, 1);
         
-        Label itemsCount = new Label("\n2");
+        Label itemsCount = new Label(String.format("\n%d", _count));
         itemsCount.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         itemsCount.setStyle("-fx-text-fill:black");
         itemsCount.setAlignment(Pos.CENTER);
@@ -186,7 +210,7 @@ public class PaymentUI extends Application{
         GridPane.setValignment(itemsCount, javafx.geometry.VPos.TOP);
         this.payment.add(itemsCount, 1, 1);
         
-        Label itemsPrice = new Label("\n60");
+        Label itemsPrice = new Label(String.format("\n%.2f", _price*1.00));
         itemsPrice.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         itemsPrice.setStyle("-fx-text-fill:black");
         itemsPrice.setAlignment(Pos.CENTER);
@@ -194,23 +218,81 @@ public class PaymentUI extends Application{
         GridPane.setValignment(itemsPrice, javafx.geometry.VPos.TOP);
         this.payment.add(itemsPrice, 2, 1);
         
-        Label vatName = new Label("รวม\n");
-        vatName.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
-        vatName.setStyle("-fx-text-fill:black");
-        GridPane.setHalignment(vatName, javafx.geometry.HPos.CENTER);
-        this.payment.add(vatName, 0, 2);
+        Label total_name = new Label("รวม\n");
+        total_name.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        total_name.setStyle("-fx-text-fill:black");
+        GridPane.setHalignment(total_name, javafx.geometry.HPos.CENTER);
+        this.payment.add(total_name, 0, 2);
         
-        Label vatCount = new Label("-\n");
-        vatCount.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
-        vatCount.setStyle("-fx-text-fill:black");
-        GridPane.setHalignment(vatCount, javafx.geometry.HPos.CENTER);
-        this.payment.add(vatCount, 1, 2);
+        Label total_Count = new Label("-\n");
+        total_Count.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        total_Count.setStyle("-fx-text-fill:black");
+        GridPane.setHalignment(total_Count, javafx.geometry.HPos.CENTER);
+        this.payment.add(total_Count, 1, 2);
         
-        Label VatPrice = new Label("120\n");
-        VatPrice.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
-        VatPrice.setStyle("-fx-text-fill:black");
-        GridPane.setHalignment(VatPrice, javafx.geometry.HPos.CENTER);
-        this.payment.add(VatPrice, 2, 2);
+        Label total_Price = new Label(String.format("%.2f\n", _price*_count*1.00));
+        total_Price.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        total_Price.setStyle("-fx-text-fill:black");
+        GridPane.setHalignment(total_Price, javafx.geometry.HPos.CENTER);
+        this.payment.add(total_Price, 2, 2);
+        
+        // <editor-fold defaultstate="collapsed" desc="pay click event">
+        otp = getOTP();
+        btnPay.setDisable(true);
+        btnPay.setOnAction((ActionEvent e)->{
+            if(btnPay.getText().equals("จ่ายเงิน")){
+                otpLabel.setText(String.format("รหัสอ้างอิง: %s", otp.getKey()));
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("(เป็นระบบจำลอง)");
+                alert.setHeaderText("กรอก OTP อันนี้ " + otp.getValue() +"  (รหัสอ้างอิง: " + otp.getKey()+")");
+                alert.show();
+                btnPay.setText("ส่งใหม่");
+                btnPay.setStyle("-fx-background-color: linear-gradient(#FFCE00, #FFCE00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);");
+                otpLabel.setVisible(true);
+                otpField.setVisible(true);
+            }
+            else if(btnPay.getText().equals("ส่งใหม่")){
+                otpField.clear();
+                otpField.setPromptText("OTP");
+                otp = getOTP();
+                otpLabel.setText(String.format("รหัสอ้างอิง: %s", otp.getKey()));
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("(เป็นระบบจำลอง)");
+                alert.setHeaderText("กรอก OTP อันนี้ " + otp.getValue() +"  (รหัสอ้างอิง: " + otp.getKey()+")");
+                alert.show();
+            }
+            else{
+                if(otp.getValue().equals(otpField.getText())){
+                    System.out.println("Pass");
+                }
+                else{
+                    otpField.clear();
+                    otpField.setPromptText("OTP ไม่ถูกต้อง");
+                }
+            }
+        });
+        // </editor-fold>;
+        
+        otpField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if(newValue.length()<6){
+                if(otpField.getLength()==0){
+                    btnPay.setDisable(false);
+                    btnPay.setText("ส่งใหม่");
+                    btnPay.setStyle("-fx-background-color: linear-gradient(#FFCE00, #FFCE00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);");
+                }
+                else if(otpField.getLength()!=5){
+                    btnPay.setDisable(true);
+                }
+                else{
+                    btnPay.setDisable(false);
+                    btnPay.setText("ยืนยัน");
+                    btnPay.setStyle("-fx-background-color: linear-gradient(#148400, #23CC00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);");
+                }
+            }
+            else{
+                otpField.setText(oldValue);
+            }
+        });
         
         // <editor-fold defaultstate="collapsed" desc="HyperLink">
         hyperlink.setOnAction((ActionEvent e)->{
@@ -236,6 +318,7 @@ public class PaymentUI extends Application{
                 status_.setVisible(false);
             }
             else if(phoneField.getLength()==10){
+                btnPay.setDisable(false);
                 boolean isMember = false;
                 for(var x : this.member){
                     if(phoneField.getText().equals(x)){
@@ -246,15 +329,31 @@ public class PaymentUI extends Application{
                 if(isMember){
                     status_.setText("เป็นสมาชิก");
                     status_.setTextFill(Color.GREENYELLOW);
+                    total_Price.setText(String.format("%.2f\n", _price*_count*.95));
+                    itemsName.setText(String.format("\n     %s\n\n     %s", _item,"ส่วนลดจากการเป็นสมาชิก"));
+                    //itemsCount.setText(String.format("\n%d\n\n%d", _count,_count));
+                    itemsPrice.setText(String.format("\n%.2f\n\n-%.2f",_price*1.00 , _price*_count*.05));
+                    total_Price.setTextFill(Color.BLUEVIOLET);
                 }
                 else{
                     status_.setText("ไม่เป็นสมาชิก");
                     status_.setTextFill(Color.GRAY);
+                    total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
+                    itemsName.setText(String.format("\n     %s\n\n", _item));
+                    //itemsCount.setText(String.format("\n%d", _count));
+                    itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
+                    total_Price.setTextFill(Color.BLACK);
                 }
             }
             else{
+                btnPay.setDisable(true);
                 status_.setText("กรุณาป้อนหมายเลขให้ครบ 10 หลัก");
                 status_.setTextFill(Color.RED);
+                total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
+                itemsName.setText(String.format("\n     %s\n\n", _item));
+                //itemsCount.setText(String.format("\n%d", _count));
+                itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
+                total_Price.setTextFill(Color.BLACK);
             }
         });
         // </editor-fold>;
@@ -287,6 +386,10 @@ public class PaymentUI extends Application{
         this.body.setBottom(this.hboxBottom);
     }
     
+    private void generateTicket(){
+        
+    }
+    
     private void loadMember() {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         this.member = new ArrayList<>(); // Clear list
@@ -316,6 +419,30 @@ public class PaymentUI extends Application{
         // </editor-fold>;
     }
     
+    private Pair<String,String> getOTP(){
+        // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 5;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = leftLimit + (int) 
+              (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        String OTP = buffer.toString();
+        buffer = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
+            int randomLimitedInt = leftLimit + (int) 
+              (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        String OTPRef = buffer.toString();
+        // </editor-fold>;
+        return new Pair<String,String>(OTPRef,OTP);
+    }
+    
     /*
     Driver
     */
@@ -327,10 +454,12 @@ public class PaymentUI extends Application{
     }
     
     @Override
-    public void start(Stage stage) throws Exception {
-        PaymentUI payment = new PaymentUI();
+    public void start(Stage stage) throws FileNotFoundException {
+        PaymentUI payment = new PaymentUI("ก๋วยเตี๋ยว",2,120);
         this.scene = new Scene(payment.getBody(),1080,720);
         stage.setScene(scene);
         stage.show();
-    }
+        
+        
+        }
 }
