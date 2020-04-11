@@ -1,0 +1,10 @@
+FoieGras,Uni,Salmon,Tuna,Tomahawk,Oyster,Wagyu,Ribeye,Honeycomb,Octopus,Seagrape,Mozzarella,Omelet,Bibimbap,Tteokbokki,Gimbap,Jajangmyeon,Ramyeon,Donut,Americano,Cappucino,Hashbrown,Nugget,Cornetto,Lobster,Cheeseburger,Cheetos,Asparagus,Macaron,Avocado,Papaya,Mashmallow
+Green,Purple,Red,Blue
+FoieGras,Oyster,Salmon,Ribeye,Uni,Tomahawk,Omelet,Tuna,Wagyu,Octopus
+Cheetos,Cheeseburger,Macaron,Salmon,Gimbap,Cornetto,Papaya,Lobster
+Honeycomb,Seagrape,Mozzarella,Bibimbap,Uni,Tteokbokki,Gimbap,Ramyeon,Jajangmyeon,Donut,Nugget
+Americano,Cappucino,Hashbrown,Donut,Papaya,Avocado,Mashmallow,Wagyu,Asparagus
+10,5,15,10,5,5,10,10,5
+5,10,5,10,5,15,10
+5,10,5,10,10,10,15,10,5,10
+5,15,10,15,10,5,5,10
