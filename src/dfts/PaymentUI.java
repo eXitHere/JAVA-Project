@@ -354,6 +354,8 @@ public class PaymentUI {
                 userUi.show();
                 this.isClickUserUi = true;
                 phoneField.clear();
+                //System.out.println("--> : " + this.isClickUserUi);
+                //System.out.println("\n\n\n");
             }
             catch(FileNotFoundException ex){
                 System.out.println("Have something wrong in Payment\n"+ex);
@@ -363,10 +365,11 @@ public class PaymentUI {
         
         // <editor-fold defaultstate="collapsed" desc="phone field event">
         phoneField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            if(this.isClickUserUi){
+            if(this.isClickUserUi && !newValue.equals("")){
                 loadMember();
                 this.isClickUserUi = false;
                 //System.out.println("Loading");
+                
             }
             if(phoneField.getLength()>10){
                 phoneField.setText(oldValue);
