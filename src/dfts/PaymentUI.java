@@ -276,6 +276,7 @@ public class PaymentUI {
                     total_Price.setTextFill(Color.BLACK);
                     return;
                 }
+                hyperlink.setDisable(true);
                 otpLabel.setText(String.format("รหัสอ้างอิง: %s", otp.getKey()));
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("(เป็นระบบจำลอง)");
@@ -354,6 +355,11 @@ public class PaymentUI {
                 userUi.show();
                 this.isClickUserUi = true;
                 phoneField.clear();
+                total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
+                itemsName.setText(String.format("\n     %s", _item));
+                //itemsCount.setText(String.format("\n%d", _count));
+                itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
+                total_Price.setTextFill(Color.BLACK);
                 //System.out.println("--> : " + this.isClickUserUi);
                 //System.out.println("\n\n\n");
             }
