@@ -52,11 +52,13 @@ public class UserUi {
     private Stage primaryStage = new Stage();
     private final DropShadow shadow = new DropShadow();
     private Font fontBtn = Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 20);
+    private int initBy;
     
-    public UserUi(Stage primaryStage) throws FileNotFoundException {
+    public UserUi(Stage primaryStage,int init) throws FileNotFoundException {
         initMain(primaryStage);
         initEdit(primaryStage);
         initCreate(primaryStage);
+        this.initBy = init;
     }
     
     public final void initEdit(Stage primaryStage) throws FileNotFoundException{
@@ -868,25 +870,43 @@ public class UserUi {
     
     public void showEdit(){
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        this.dialog.hide();
-        this.dialogEdit.show();
-        this.primaryStage.hide();
+        if(this.initBy==0){
+            this.dialog.hide();
+            this.dialogEdit.show();
+            this.primaryStage.hide();
+        }
+        else if(this.initBy==1){
+            this.dialog.hide();
+            this.dialogEdit.show();
+        }
         // </editor-fold>;
     }
     
     public void showCreate(){
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        this.dialog.hide();
-        this.dialogCreate.show();
-        this.primaryStage.hide();
+        if(this.initBy==0){
+            this.dialog.hide();
+            this.dialogCreate.show();
+            this.primaryStage.hide();
+        }
+        else if(this.initBy==1){
+            this.dialog.hide();
+            this.dialogCreate.show();
+        }
         // </editor-fold>;
     }
     
     public void showMain(){
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        this.primaryStage.show();
-        this.dialogCreate.hide();
-        this.dialogEdit.hide();
+        if(this.initBy==0){
+            this.primaryStage.show();
+            this.dialogCreate.hide();
+            this.dialogEdit.hide();
+        }
+        else if(this.initBy==1){
+            this.dialogCreate.hide();
+            this.dialogEdit.hide();
+        }
         // </editor-fold>;
     }
     

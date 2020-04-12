@@ -71,6 +71,7 @@ public class MapAndTime {
     private int indexReviews = 0;
     private int indexSubReviews = 0;
     private int person_count=0;
+    private Stage primary;
     
     public MapAndTime(Stage primary,List<String> nameStation) throws FileNotFoundException {
         //System.out.println("Create Map and Time new !");
@@ -83,6 +84,7 @@ public class MapAndTime {
             primary.show();
         });
         this.body.setResizable(false);
+        this.primary = primary;
     }
     
     private Button initButton(String text) throws FileNotFoundException{
@@ -342,7 +344,7 @@ public class MapAndTime {
         
         this.btnConfirm.setOnAction((ActionEvent e)->{
             try{
-                PaymentUI payment = new PaymentUI(this.mapName.get(this.way.get(0).get(0)),this.mapName.get(this.way.get(0).get(this.way.get(0).size()-1)),this.price.get(indexMain),this.person_count);
+                PaymentUI payment = new PaymentUI(this.primary,this.body,this.mapName.get(this.way.get(0).get(0)),this.mapName.get(this.way.get(0).get(this.way.get(0).size()-1)),this.price.get(indexMain),this.person_count);
                 this.ticketScene = new Scene(payment.getBody());
                 this.body.setScene(this.ticketScene);
             }

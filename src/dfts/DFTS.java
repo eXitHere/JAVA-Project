@@ -131,24 +131,30 @@ public class DFTS extends Application{
         });
         */
         btnHome.setOnAction((ActionEvent e) -> {
-            System.out.println("Home Clicked!");
+            //System.out.println("Home Clicked!");
             this.mainBorder.setCenter(mainPage.get("main"));
         });
         
         btnMap.setOnAction((ActionEvent e) -> {
-            System.out.println("Map Clicked!");
+            //System.out.println("Map Clicked!");
             this.mainBorder.setCenter(mainPage.get("map"));
             
         });
         
         btnTime.setOnAction((ActionEvent e) -> {
-            System.out.println("Time Clicked!");
+            //System.out.println("Time Clicked!");
             this.mainBorder.setCenter(mainPage.get("time"));
         });
         
         btnUser.setOnAction((ActionEvent e) -> {
-            System.out.println("User Clicked!");
-            this.userUi.show();
+            //System.out.println("User Clicked!");
+            try{
+                this.userUi = new UserUi(this.mainStage,0);
+                this.userUi.show();
+            }
+            catch(Exception ex){
+                System.out.println("Have somethinf wrong!\n"+ex);
+            }
             //this.mainBorder.setCenter(mainPage.get("time"));
         });
         
@@ -826,7 +832,6 @@ public class DFTS extends Application{
         stage.show();
         this.load = new Loading(stage);
         this.mainStage = stage;
-        this.userUi = new UserUi(stage);
         //mapTime.show(mapCode.getPath("Lobster","Avocado"));
         //stage.hide();
     }

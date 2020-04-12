@@ -25,9 +25,9 @@ public class DriverPaymentUI extends Application{
     @Override
     public void start(Stage stage) throws FileNotFoundException {
         
-        PaymentUI payment = new PaymentUI("ก๋วยเตี๋ยว","น้ำตก",120,2);
-        Scene scene = new Scene(payment.getBody(),1080,720);
-        stage.setScene(scene);
+        //PaymentUI payment = new PaymentUI("ก๋วยเตี๋ยว","น้ำตก",120,2);
+        //Scene scene = new Scene(payment.getBody(),1080,720);
+        //stage.setScene(scene);
         //saveAsPng(payment.takeShot(),"test");
         stage.show();
         

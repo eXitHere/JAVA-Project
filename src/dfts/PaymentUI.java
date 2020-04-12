@@ -8,21 +8,20 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -57,9 +56,15 @@ public class PaymentUI {
     private String __start,__stop;
     private int __count,__price;
     private String user_Display = "";
+    private Stage primary;
+    private boolean isClickUserUi = false;
+    private Stage primary_mat; //MAP AND TIME
     //payment
     
-    public PaymentUI(String start,String stop,int price,int count) throws FileNotFoundException {
+    public PaymentUI(Stage primary,Stage primary_mat,String start,String stop,int price,int count) throws FileNotFoundException {
+        // <editor-fold defaultstate="collapsed" desc="Compiled code">
+        this.primary_mat = primary_mat;
+        this.primary = primary;
         this.__start = start;
         this.__stop = stop;
         this.__count = count;
@@ -103,11 +108,26 @@ public class PaymentUI {
         status_.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 16));
         HBox.setMargin(status_, new Insets(10,0,0,2));
         
-        Button btnBack = new Button("ย้อนกลับ");
+        Button btnBack = new Button("ยกเลิิก");
         btnBack.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
         btnBack.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         btnBack.setPrefSize(120, 35);
         HBox.setMargin(btnBack, new Insets(5, 0, 0, 395));
+        
+        // <editor-fold defaultstate="collapsed" desc="Close form">
+        btnBack.setOnAction((ActionEvent ex)->{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setTitle("DFTS REGISTER");
+            alert.setContentText("ระบบจะพากลับไปยังหน้าหลัก และไม่บันทึก");
+            alert.setHeaderText("ต้องการยกเลิกการจ่ายเงิน");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                this.primary_mat.close();
+            }
+            
+        });
+        // </editor-fold>;
         
         this.hboxHeader.getChildren().addAll(infomation,phoneField,status,status_,btnBack);
         
@@ -245,6 +265,17 @@ public class PaymentUI {
         btnPay.setDisable(true);
         btnPay.setOnAction((ActionEvent e)->{
             if(btnPay.getText().equals("จ่ายเงิน")){
+                if(phoneField.getLength()==0){
+                    btnPay.setDisable(true);
+                    status_.setText("กรุณาป้อนหมายเลขให้ครบ 10 หลัก");
+                    status_.setTextFill(Color.RED);
+                    total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
+                    itemsName.setText(String.format("\n     %s", _item));
+                    //itemsCount.setText(String.format("\n%d", _count));
+                    itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
+                    total_Price.setTextFill(Color.BLACK);
+                    return;
+                }
                 otpLabel.setText(String.format("รหัสอ้างอิง: %s", otp.getKey()));
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("(เป็นระบบจำลอง)");
@@ -254,6 +285,7 @@ public class PaymentUI {
                 btnPay.setStyle("-fx-background-color: linear-gradient(#FFCE00, #FFCE00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);");
                 otpLabel.setVisible(true);
                 otpField.setVisible(true);
+                phoneField.editableProperty().set(false);
             }
             else if(btnPay.getText().equals("ส่งใหม่")){
                 otpField.clear();
@@ -316,12 +348,26 @@ public class PaymentUI {
         
         // <editor-fold defaultstate="collapsed" desc="HyperLink">
         hyperlink.setOnAction((ActionEvent e)->{
-            System.out.println("User show");
+            //System.out.println("User show");
+            try{
+                UserUi userUi = new UserUi(this.primary,1);
+                userUi.show();
+                this.isClickUserUi = true;
+                phoneField.clear();
+            }
+            catch(FileNotFoundException ex){
+                System.out.println("Have something wrong in Payment\n"+ex);
+            }
         });
         // </editor-fold>;
         
         // <editor-fold defaultstate="collapsed" desc="phone field event">
         phoneField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if(this.isClickUserUi){
+                loadMember();
+                this.isClickUserUi = false;
+                //System.out.println("Loading");
+            }
             if(phoneField.getLength()>10){
                 phoneField.setText(oldValue);
             }
@@ -405,31 +451,24 @@ public class PaymentUI {
         this.body.setCenter(this.mainPayment);
         this.body.setBottom(this.hboxBottom);
         //generateTicket();
+        // </editor-fold>;
     }
     
     public Label getLabel(String txt) throws FileNotFoundException{
+        // <editor-fold defaultstate="collapsed" desc="init label">
         Label body = new Label(txt);
         body.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
         body.setStyle("-fx-text-fill:black");
         return body;
+        // </editor-fold>;
     }
     
     //private List<Group> list = new ArrayList<>();
-    private ImageView imageView;
-    private int j = 0;
-    private double orgCliskSceneX, orgReleaseSceneX;
     private Button lbutton, rButton;
     private StackPane stackPane = new StackPane();
-    // <editor-fold defaultstate="collapsed" desc="Mouse event">
-            EventHandler<MouseEvent> circleOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
-            @Override
-                public void handle(MouseEvent t) {
-                    orgCliskSceneX = t.getSceneX();
-                }
-            };
-            // </editor-fold>;
     
     private void generateTicket() throws FileNotFoundException{
+        // <editor-fold defaultstate="collapsed" desc="Compiled code">
         generateQRcode qr = new generateQRcode();
         ImageView bgTickle = new ImageView(new Image(new FileInputStream("src/resources/images/ticket2thblue.png")));
         //list.add(qr.getQRCode("Hello"));
@@ -440,7 +479,8 @@ public class PaymentUI {
             bgTickle.setBlendMode(BlendMode.SRC_OVER);
             bgTickle.setLayoutX(-262);
             bgTickle.setLayoutY(-105);
-            System.out.println(i);
+            //System.out.println(i);
+            System.out.println("Ticket : " + String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i));
             ImageView QR = new ImageView(new Image(qr.getQRCode(String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i))));
             
             Label start = getLabel(String.format("%s", this.__start));
@@ -549,13 +589,27 @@ public class PaymentUI {
         btnClose.setPrefSize(180, 60);
         HBox.setMargin(btnClose, new Insets(20,10,10,10));
         
+        // <editor-fold defaultstate="collapsed" desc="Close form">
+        btnClose.setOnAction((ActionEvent ev)->{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setTitle("DFTS REGISTER");
+            alert.setContentText("ระบบจะพากลับไปยังหน้าหลัก");
+            alert.setHeaderText("ต้องการปิดหน้าต่างนี้ใช่หรือไม่");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                this.primary_mat.close();
+            }
+        });
+        // </editor-fold>;
+        
         hbox.getChildren().addAll(title,btnClose);
         
         
         this.body.setTop(hbox);
         this.body.setCenter(hboxCenter);
         this.body.setBottom(hboxSave);
-        
+        // </editor-fold>;
         // <editor-fold defaultstate="collapsed" desc="Drop shodow">
         DropShadow shadow = new DropShadow();
         
@@ -623,6 +677,7 @@ public class PaymentUI {
             //System.out.println(f.getName());
             String[] name = ((String)f.getName()).split(".user");
             this.member.add(name[0]);
+            System.out.println("member : " + name[0]);
         }
         // </editor-fold>;
     }
