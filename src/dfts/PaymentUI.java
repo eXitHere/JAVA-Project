@@ -6,33 +6,32 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import static java.lang.Math.ceil;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import static java.nio.file.Files.size;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -41,13 +40,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import javax.imageio.ImageIO;
 
-public class PaymentUI extends Application{
+public class PaymentUI {
     private BorderPane body = new BorderPane();
     private GridPane payment = new GridPane();
     private BorderPane mainPayment = new BorderPane();
@@ -56,13 +54,19 @@ public class PaymentUI extends Application{
     private HBox hboxBottom = new HBox();
     private List<String> member = new ArrayList<>();
     private Pair<String,String> otp;
+    private String __start,__stop;
+    private int __count,__price;
+    private String user_Display = "";
     //payment
-
-    public PaymentUI() {
-    }
     
-    
-    public PaymentUI(String _item,int _count,int _price) throws FileNotFoundException {
+    public PaymentUI(String start,String stop,int price,int count) throws FileNotFoundException {
+        this.__start = start;
+        this.__stop = stop;
+        this.__count = count;
+        this.__price = price;
+        String _item = String.format("ตั๋วจากสถานี %s ไปยัง %s", start,stop);
+        int _price = price;
+        int _count = count;
         loadMember();
         this.hboxHeader.setStyle("-fx-border-color: red; -fx-border-width: 1 1 1 1;");
         this.payment.setStyle("-fx-border-color: blue; -fx-border-width: 1 1 1 1;");
@@ -264,6 +268,22 @@ public class PaymentUI extends Application{
             else{
                 if(otp.getValue().equals(otpField.getText())){
                     System.out.println("Pass");
+                    try{
+                        if(status_.getText().equals("เป็นสมาชิก")){
+                            User user = null;
+                            try(FileInputStream fi = new FileInputStream(new File(String.format("src/resources/data/%s.user", phoneField.getText()))); ObjectInputStream oi = new ObjectInputStream(fi);){
+                                user = (User)oi.readObject();
+                            }
+                            this.user_Display = String.format("%s %s", user.getFirstName(),user.getLastName());
+                        } 
+                        else{
+                            this.user_Display = "Guest";
+                        }
+                        generateTicket();
+                    }
+                    catch(Exception ex){
+                        System.out.println("Have something wrong!"+ex);
+                    }
                 }
                 else{
                     otpField.clear();
@@ -339,7 +359,7 @@ public class PaymentUI extends Application{
                     status_.setText("ไม่เป็นสมาชิก");
                     status_.setTextFill(Color.GRAY);
                     total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
-                    itemsName.setText(String.format("\n     %s\n\n", _item));
+                    itemsName.setText(String.format("\n     %s", _item));
                     //itemsCount.setText(String.format("\n%d", _count));
                     itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
                     total_Price.setTextFill(Color.BLACK);
@@ -350,7 +370,7 @@ public class PaymentUI extends Application{
                 status_.setText("กรุณาป้อนหมายเลขให้ครบ 10 หลัก");
                 status_.setTextFill(Color.RED);
                 total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
-                itemsName.setText(String.format("\n     %s\n\n", _item));
+                itemsName.setText(String.format("\n     %s", _item));
                 //itemsCount.setText(String.format("\n%d", _count));
                 itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
                 total_Price.setTextFill(Color.BLACK);
@@ -384,9 +404,203 @@ public class PaymentUI extends Application{
         this.body.setTop(this.hboxHeader);
         this.body.setCenter(this.mainPayment);
         this.body.setBottom(this.hboxBottom);
+        //generateTicket();
     }
     
-    private void generateTicket(){
+    public Label getLabel(String txt) throws FileNotFoundException{
+        Label body = new Label(txt);
+        body.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        body.setStyle("-fx-text-fill:black");
+        return body;
+    }
+    
+    //private List<Group> list = new ArrayList<>();
+    private ImageView imageView;
+    private int j = 0;
+    private double orgCliskSceneX, orgReleaseSceneX;
+    private Button lbutton, rButton;
+    private StackPane stackPane = new StackPane();
+    // <editor-fold defaultstate="collapsed" desc="Mouse event">
+            EventHandler<MouseEvent> circleOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+                public void handle(MouseEvent t) {
+                    orgCliskSceneX = t.getSceneX();
+                }
+            };
+            // </editor-fold>;
+    
+    private void generateTicket() throws FileNotFoundException{
+        generateQRcode qr = new generateQRcode();
+        ImageView bgTickle = new ImageView(new Image(new FileInputStream("src/resources/images/ticket2thblue.png")));
+        //list.add(qr.getQRCode("Hello"));
+        //list.add(qr.getQRCode("world"));
+       
+        for(int i=0;i<this.__count;i++){
+            bgTickle = new ImageView(new Image(new FileInputStream("src/resources/images/ticket2thblue.png")));
+            bgTickle.setBlendMode(BlendMode.SRC_OVER);
+            bgTickle.setLayoutX(-262);
+            bgTickle.setLayoutY(-105);
+            System.out.println(i);
+            ImageView QR = new ImageView(new Image(qr.getQRCode(String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i))));
+            
+            Label start = getLabel(String.format("%s", this.__start));
+            start.setMaxSize(180, 100);
+            start.setLayoutX(-225.83);
+            start.setLayoutY(-28.277);
+            
+            Label stop = getLabel(String.format("%s", this.__stop));
+            stop.setMaxSize(180, 100);
+            stop.setLayoutX(-225.83);
+            stop.setLayoutY(55);
+            
+            Label name = getLabel(String.format("%s",this.user_Display));
+            name.setMaxSize(180, 100);
+            name.setLayoutX(-225.83);
+            name.setLayoutY(142);
+            
+            Label price = getLabel(String.format("%.2f บาท",this.__price*1.00));
+            price.setMaxSize(180, 100);
+            price.setLayoutX(-225.83);
+            price.setLayoutY(222);
+            
+            Group group = new Group(bgTickle,QR,start,stop,name,price);
+            stackPane.getChildren().add(group);
+        }
+        
+        lbutton = new Button("<");
+        rButton = new Button(">");
+        
+        lbutton.setStyle("-fx-background-color: linear-gradient(#FFCE00, #FFCE00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        lbutton.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        lbutton.setPrefSize(30, 420);
+        HBox.setMargin(lbutton, new Insets(55,20,0,20));
+        
+        rButton.setStyle("-fx-background-color: linear-gradient(#FFCE00, #FFCE00); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        rButton.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+        rButton.setPrefSize(30, 420);
+        HBox.setMargin(rButton, new Insets(55,20,0,20));
+        
+        HBox hboxCenter = new HBox();
+        hboxCenter.setPadding(new Insets(0,0,0,0));
+        hboxCenter.setAlignment(Pos.TOP_CENTER);
+        
+        lbutton.setOnAction(e -> {
+            ObservableList<Node> childs = this.stackPane.getChildren();
+            if (childs.size() > 1) {
+               //
+               Node topNode = childs.get(childs.size()-1);
+               topNode.toBack();
+           }
+        });
+        rButton.setOnAction(e -> {
+            ObservableList<Node> childs = this.stackPane.getChildren();
+            if (childs.size() > 1) {
+               //
+               Node topNode = childs.get(0);
+               topNode.toFront();
+           }
+        });
+
+        hboxCenter.getChildren().addAll(lbutton,stackPane,rButton);
+        
+        HBox hboxSave = new HBox();
+        hboxSave.setAlignment(Pos.CENTER);
+        hboxSave.setStyle("-fx-border-color: red; -fx-border-width: 1 1 1 1;");
+        hboxSave.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B);");
+        
+        Button btnSaveAll = new Button("บันทึกทั้งหมด");
+        btnSaveAll.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        btnSaveAll.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        btnSaveAll.setPrefSize(220, 60);
+        HBox.setMargin(btnSaveAll, new Insets(20,10,10,10));
+        
+        Button btnSave1 = new Button("บันทึกเฉพาะตั๋ว (ทั้งหมด) ");
+        btnSave1.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        btnSave1.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        btnSave1.setPrefSize(220, 60);
+        HBox.setMargin(btnSave1, new Insets(20,10,10,10));
+        
+        Button btnSave2 = new Button("บันทึกเฉพาะตั๋ว (ใบนี้) ");
+        btnSave2.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        btnSave2.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        btnSave2.setPrefSize(220, 60);
+        HBox.setMargin(btnSave2, new Insets(20,10,10,10));
+        
+        Button btnSave3 = new Button("บันทึกเฉพาะใบเสร็จ");
+        btnSave3.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        btnSave3.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        btnSave3.setPrefSize(220, 60);
+        HBox.setMargin(btnSave3, new Insets(20,10,10,10));
+        
+        hboxSave.getChildren().addAll(btnSaveAll,btnSave1,btnSave2,btnSave3);
+        
+        HBox hbox = new HBox();
+        hbox.setStyle("-fx-border-color: red; -fx-border-width: 1 1 1 1;");
+        hbox.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B);");
+        Label title = new Label("                                                  ขอบคุณที่ใช้บริการ\n\n                               บริษัท Delicious Food Transit System (DFTS) จำกัด");
+        title.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 22));
+        title.setStyle("-fx-text-fill:white");
+        title.setAlignment(Pos.CENTER);
+        title.setPrefSize(900, 100);
+        
+        Button btnClose = new Button("ปิด");
+        btnClose.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
+        btnClose.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
+        btnClose.setPrefSize(180, 60);
+        HBox.setMargin(btnClose, new Insets(20,10,10,10));
+        
+        hbox.getChildren().addAll(title,btnClose);
+        
+        
+        this.body.setTop(hbox);
+        this.body.setCenter(hboxCenter);
+        this.body.setBottom(hboxSave);
+        
+        // <editor-fold defaultstate="collapsed" desc="Drop shodow">
+        DropShadow shadow = new DropShadow();
+        
+        btnClose.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnClose.setEffect(shadow);
+        });
+                
+        btnClose.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnClose.setEffect(null);
+        });
+       
+        btnSaveAll.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnSaveAll.setEffect(shadow);
+        });
+                
+        btnSaveAll.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnSaveAll.setEffect(null);
+        });
+
+        btnSave1.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnSave1.setEffect(shadow);
+        });
+                
+        btnSave1.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnSave1.setEffect(null);
+        });
+
+        btnSave2.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnSave2.setEffect(shadow);
+        });
+                
+        btnSave2.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnSave2.setEffect(null);
+        });
+
+        btnSave3.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnSave3.setEffect(shadow);
+        });
+                
+        btnSave3.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnSave3.setEffect(null);
+        });
+
+        
+        // </editor-fold>;
         
     }
     
@@ -419,6 +633,22 @@ public class PaymentUI extends Application{
         // </editor-fold>;
     }
     
+    public BorderPane takeShot(){
+        return this.mainPayment;
+    }
+    
+    public static final void saveAsPng(final Node NODE, final String FILE_NAME) {
+        final WritableImage SNAPSHOT = NODE.snapshot(new SnapshotParameters(), null);
+        final String        NAME     = FILE_NAME.replace("\\.[a-zA-Z]{3,4}", "");
+        final File          FILE     = new File(NAME + ".png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(SNAPSHOT, null), "png", FILE);
+        } catch (IOException exception) {
+            // handle exception here
+        }
+    }
+    
     private Pair<String,String> getOTP(){
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         int leftLimit = 97; // letter 'a'
@@ -446,20 +676,4 @@ public class PaymentUI extends Application{
     /*
     Driver
     */
-
-    private Scene scene;
-    
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-    @Override
-    public void start(Stage stage) throws FileNotFoundException {
-        PaymentUI payment = new PaymentUI("ก๋วยเตี๋ยว",2,120);
-        this.scene = new Scene(payment.getBody(),1080,720);
-        stage.setScene(scene);
-        stage.show();
-        
-        
-        }
 }

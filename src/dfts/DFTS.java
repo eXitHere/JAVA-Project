@@ -437,12 +437,12 @@ public class DFTS extends Application{
                     this.mapTime = new MapAndTime(this.mainStage,this.nameStation);
                     //System.out.println("2");
                     this.mainStage.hide();
-                    this.mapTime.show(this.mapCode.getPath(this.startAt,this.stopAt),"จาก " + startAt + " ไปยัง " + stopAt);
+                    this.mapTime.show(this.mapCode.getPath(this.startAt,this.stopAt),"จาก " + startAt + " ไปยัง " + stopAt,(Integer)combo_Count.getValue());
                     loadShow();
                     //System.out.println("3");
                 }
                 catch (Exception ex) {
-                    System.out.println("Error? no!");
+                    System.out.println("Error? no!" + ex);
                 }
                 
             }

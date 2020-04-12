@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,7 +38,7 @@ import javafx.util.Pair;
 public class MapAndTime {
     private final Stage body = new Stage();
     private final Scene scene;
-    private final Scene ticketScene;
+    private Scene ticketScene;
     private final BorderPane boarderPane = new BorderPane();
     private final BorderPane ticketBoarderPane = new BorderPane();
     private final HBox topHBox = new HBox();
@@ -69,6 +70,7 @@ public class MapAndTime {
     private final HashMap<Integer,Integer> Rating = new HashMap<>();
     private int indexReviews = 0;
     private int indexSubReviews = 0;
+    private int person_count=0;
     
     public MapAndTime(Stage primary,List<String> nameStation) throws FileNotFoundException {
         //System.out.println("Create Map and Time new !");
@@ -81,7 +83,6 @@ public class MapAndTime {
             primary.show();
         });
         this.body.setResizable(false);
-        initTicket();
     }
     
     private Button initButton(String text) throws FileNotFoundException{
@@ -112,12 +113,6 @@ public class MapAndTime {
         temp.setStyle("-fx-text-fill:"+ color +";");
         return temp;
         // </editor-fold>;
-    }
-    
-    private void initTicket(){
-        GridPane grid = new GridPane();
-        this.ticketBoarderPane.setCenter(grid);
-        
     }
     
     private void myInit() throws FileNotFoundException{
@@ -343,10 +338,17 @@ public class MapAndTime {
         }
         catch (FileNotFoundException ex){
             System.out.println("Can't load map");
-        } 
+        }
         
         this.btnConfirm.setOnAction((ActionEvent e)->{
-            this.body.setScene(this.ticketScene);
+            try{
+                PaymentUI payment = new PaymentUI(this.mapName.get(this.way.get(0).get(0)),this.mapName.get(this.way.get(0).get(this.way.get(0).size()-1)),this.price.get(indexMain),this.person_count);
+                this.ticketScene = new Scene(payment.getBody());
+                this.body.setScene(this.ticketScene);
+            }
+            catch(Exception ex){
+                System.out.println(ex);
+            }
         });
         // </editor-fold>;
     }
@@ -488,9 +490,10 @@ public class MapAndTime {
         // </editor-fold>;     
     }
     
-    public void show(Pair<Pair<List<List<Integer>>,List<List<Integer>>>,List<Integer>> value,String title) throws FileNotFoundException, ClassNotFoundException {
+    public void show(Pair<Pair<List<List<Integer>>,List<List<Integer>>>,List<Integer>> value,String title,int person_count) throws FileNotFoundException, ClassNotFoundException {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         this.body.setTitle(title);
+        this.person_count = person_count;
         var x = value.getKey();
         this.way = x.getKey();
         this.time = x.getValue();
