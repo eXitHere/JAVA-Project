@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -69,6 +71,7 @@ public class PaymentUI {
         this.__stop = stop;
         this.__count = count;
         this.__price = price;
+        //System.out.println("debug :::: " + this.__start);
         String _item = String.format("ตั๋วจากสถานี %s ไปยัง %s", start,stop);
         int _price = price;
         int _count = count;
@@ -371,6 +374,7 @@ public class PaymentUI {
         
         // <editor-fold defaultstate="collapsed" desc="phone field event">
         phoneField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            
             if(this.isClickUserUi && !newValue.equals("")){
                 loadMember();
                 this.isClickUserUi = false;
@@ -384,15 +388,12 @@ public class PaymentUI {
                 phoneField.setText(newValue.replaceAll("[^\\d]", ""));
             }
             
-            if(phoneField.getLength()==1){
-                status.setVisible(true);
-                status_.setVisible(true);
-            }
-            else if(newValue.length()==0){
+            if(newValue.length()==0){
                 status.setVisible(false);
                 status_.setVisible(false);
             }
             else if(phoneField.getLength()==10){
+                System.out.println("Do");
                 btnPay.setDisable(false);
                 boolean isMember = false;
                 for(var x : this.member){
@@ -421,6 +422,8 @@ public class PaymentUI {
                 }
             }
             else{
+                status.setVisible(true);
+                status_.setVisible(true);
                 btnPay.setDisable(true);
                 status_.setText("กรุณาป้อนหมายเลขให้ครบ 10 หลัก");
                 status_.setTextFill(Color.RED);
@@ -580,6 +583,18 @@ public class PaymentUI {
         btnSave3.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
         btnSave3.setPrefSize(220, 60);
         HBox.setMargin(btnSave3, new Insets(20,10,10,10));
+        btnSave3.setOnAction((ActionEvent e)->{
+            //System.out.println("!!!debug :::: " + this.__start);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddyyyyhhmmss");
+            System.out.println(String.format("Ticket_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            saveAsPng(takeShot(),String.format("Ticket_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setContentText("อยู่ใน C:/DFTS_PROJECT");
+            alert.setHeaderText("บันทึกใบเสร็จ เสร็จแล้ว");
+            alert.showAndWait();
+        });
+        
         
         hboxSave.getChildren().addAll(btnSaveAll,btnSave1,btnSave2,btnSave3);
         
@@ -704,7 +719,7 @@ public class PaymentUI {
     public static final void saveAsPng(final Node NODE, final String FILE_NAME) {
         final WritableImage SNAPSHOT = NODE.snapshot(new SnapshotParameters(), null);
         final String        NAME     = FILE_NAME.replace("\\.[a-zA-Z]{3,4}", "");
-        final File          FILE     = new File(NAME + ".png");
+        final File          FILE     = new File("C:\\DFTS_PROJECT\\" + NAME + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(SNAPSHOT, null), "png", FILE);

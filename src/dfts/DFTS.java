@@ -1,6 +1,7 @@
 package dfts;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -66,6 +67,8 @@ public class DFTS extends Application{
     
     private UserUi userUi;
     
+    private int adminClick = 0;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -84,6 +87,15 @@ public class DFTS extends Application{
             FileInputStream inputstream = new FileInputStream("src/resources/images/logo-182x182.jpg");       
             Image logo = new Image(inputstream);
             ImageView Logo = new ImageView(logo);
+            Logo.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                if(this.adminClick==2){
+                    AdminSite admin = new AdminSite(this.mainStage);
+                    admin.show();
+                    this.mainStage.hide();
+                    this.adminClick = 0;
+                }
+                this.adminClick++;
+            });
             VBox.setMargin(Logo, new Insets(2, 10, 10, 10));
             vbox.getChildren().add(Logo);
         }
@@ -130,6 +142,7 @@ public class DFTS extends Application{
             }
         });
         */
+        
         btnHome.setOnAction((ActionEvent e) -> {
             //System.out.println("Home Clicked!");
             this.mainBorder.setCenter(mainPage.get("main"));
@@ -823,6 +836,7 @@ public class DFTS extends Application{
     
     @Override
     public void start(Stage stage) throws Exception {
+        mkdir();
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
@@ -836,4 +850,15 @@ public class DFTS extends Application{
         //stage.hide();
     }
     
+    
+    private void mkdir(){
+        File file = new File("C:\\DFTS_Project");
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directory is created! (C:\\DFTS_Project)");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+    }
 }
