@@ -78,18 +78,18 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         
         this.body.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B)");
         
-        this.btnShow1.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
         this.btnShow1.setPrefSize(180, 60);
         this.btnShow1.setFont(font);
-        
-        this.btnShow2.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+
+        this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
         this.btnShow2.setPrefSize(180, 60);
         this.btnShow2.setFont(font);
         
         this.hboxTop.getChildren().addAll(this.btnShow1,this.btnShow2);
         this.hboxTop.setAlignment(Pos.CENTER);
                                     // Top Left buttom right
-        this.hboxTop.setPadding(new Insets(40,10,10,10));
+        this.hboxTop.setPadding(new Insets(40,10,10,160));
         HBox.setMargin(this.btnShow1, new Insets(0,50,0,50));
        
         changeGrid();
@@ -131,19 +131,20 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         });
 
 
-        this.btnSub1.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        this.btnSub1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: green;");
         this.btnSub1.setPrefSize(200, 60);
         this.btnSub1.setFont(font);
         
-        this.btnSub2.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        
+        this.btnSub2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: purple;");
         this.btnSub2.setPrefSize(200, 60);
         this.btnSub2.setFont(font);
 
-        this.btnSub3.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        this.btnSub3.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: red;");
         this.btnSub3.setPrefSize(200, 60);
         this.btnSub3.setFont(font);
 
-        this.btnSub4.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        this.btnSub4.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: blue;");
         this.btnSub4.setPrefSize(200, 60);
         this.btnSub4.setFont(font);
         
@@ -162,8 +163,8 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         vboxSubMain.setMargin(this.title,new Insets(10));
         vboxSubMain.setMargin(this.scrollGrid, new Insets(0,5,10,5));
         
-        this.scrollGrid.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        this.scrollGrid.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        this.scrollGrid.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        this.scrollGrid.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.scrollGrid.setPrefViewportHeight(670);
         this.scrollGrid.setPrefViewportWidth(500);
         this.scrollGrid.setPrefSize(500,670);
@@ -183,11 +184,11 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         Label end = new Label();
         Label time = new Label();
 
-        this.grid.setGridLinesVisible(false);
+        //this.grid.setGridLinesVisible(false);
         this.grid.getColumnConstraints().clear();
         this.grid.getRowConstraints().clear();
         this.grid.getChildren().clear();
-        this.grid.setGridLinesVisible(true);
+        //this.grid.setGridLinesVisible(true);
                  
         System.out.println("a: "+a+" b: "+b);
             
@@ -200,6 +201,15 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
             Label titleA =new Label("สถานีต้นทาง");
             Label titleB =new Label("สถานีปลายทาง");
             Label titleC =new Label("ระยะเวลาที่ใช้(นาที)");
+            titleA.setPrefSize(258, 38);
+            titleA.setStyle("-fx-background-color: linear-gradient(#FFC524, #FFC524); -fx-text-fill: white;");
+            titleA.setAlignment(Pos.CENTER);
+            titleB.setPrefSize(258, 38);
+            titleB.setStyle("-fx-background-color: linear-gradient(#FFD15F, #FFD15F); -fx-text-fill: white;");
+            titleB.setAlignment(Pos.CENTER);
+            titleC.setPrefSize(258, 38);
+            titleC.setStyle("-fx-background-color: linear-gradient(#FFC524, #FFC524); -fx-text-fill: white;");
+            titleC.setAlignment(Pos.CENTER);
             titleA.setFont(fontSmallR);
             titleB.setFont(fontSmallR);
             titleC.setFont(fontSmallR);
@@ -217,12 +227,20 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     this.grid.getRowConstraints().add(new RowConstraints(40));
                     start = new Label(subRailway.get(b-1).get(i));
                     start.setFont(fontSmallR);
+                    start.setAlignment(Pos.CENTER);
+                    start.setPrefSize(258, 38);
+                    if(i%2==0) start.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                    else       start.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                     grid.setHalignment(start, javafx.geometry.HPos.CENTER);
                     this.grid.add(start, 0 , i+1);
 
                     end = new Label(timeRailway.get(b-1).get(i));
                     this.grid.add(end, 2 , i+1);
                     end.setFont(fontSmallR);
+                    end.setAlignment(Pos.CENTER);
+                    end.setPrefSize(258, 38);
+                    if(i%2==0) end.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                    else       end.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                     grid.setHalignment(end, javafx.geometry.HPos.CENTER);
 
                 }
@@ -230,6 +248,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 {
                     time = new Label(subRailway.get(b-1).get(i));
                     time.setFont(fontSmallR);
+                    time.setAlignment(Pos.CENTER);
+                    time.setPrefSize(258, 38);
+                    if(i%2==1) time.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                    else       time.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                     grid.setHalignment(time, javafx.geometry.HPos.CENTER);
                     this.grid.add(time, 1, i);
                 }
@@ -237,13 +259,21 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         
             switch(b)
             {
-                case 1:   this.title.setText("ตารางการเดินรถแบบย่อ สาย Green ");      
+                case 1:   this.title.setText("ตารางการเดินรถแบบย่อ สาย Green ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
                              break;
                 case 2:   this.title.setText("ตารางการเดินรถแบบย่อ สาย Purple ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Purple;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Purple;");
                               break;  
                 case 3:   this.title.setText("ตารางการเดินรถแบบย่อ สาย Red ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Red;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Red;");
                              break;
                 case 4:   this.title.setText("ตารางการเดินรถแบบย่อ สาย Blue ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Blue;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Blue;");
                             break;
             }
         }
@@ -262,6 +292,12 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
 
             Label titleD = new Label("สถานี");
             Label titleE = new Label("ขบวน A ");
+            titleD.setPrefSize(81, 38);
+            titleD.setStyle("-fx-background-color: linear-gradient(#FFC524, #FFC524); -fx-text-fill: white;");
+            titleD.setAlignment(Pos.CENTER);
+            titleE.setPrefSize(81, 38);
+            titleE.setStyle("-fx-background-color: linear-gradient(#FFD15F, #FFD15F); -fx-text-fill: white;");
+            titleE.setAlignment(Pos.CENTER);
             titleD.setFont(fontSmallR);
             titleE.setFont(fontSmallR);
             this.grid.add(titleD, 0, 0);
@@ -274,6 +310,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 this.grid.getRowConstraints().add(new RowConstraints(40));
                 station = new Label(subRailway.get(b-1).get(i));
                 station.setFont(fontSmallR);
+                station.setPrefSize(81, 38);
+                if(i%2==0) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                station.setAlignment(Pos.CENTER);
                 grid.setHalignment(station, javafx.geometry.HPos.CENTER);
                 this.grid.add(station, 0 , i +1);
             }
@@ -282,6 +322,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 this.grid.getRowConstraints().add(new RowConstraints(40));
                 station = new Label(subRailway.get(b-1).get(i));
                 station.setFont(fontSmallR);
+                station.setPrefSize(81, 38);
+                if(i%2==0) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                station.setAlignment(Pos.CENTER);
                 grid.setHalignment(station, javafx.geometry.HPos.CENTER);
                 this.grid.add(station, 0 , (2*subRailway.get(b-1).size()) - i -1);
             }
@@ -293,6 +337,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 showTime = initTime(hour,minute);
                 showTime.setFont(fontSmallR);
                 this.grid.add(showTime,column,count+1);
+                showTime.setPrefSize(81, 38);
+                if((column)%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else              showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                showTime.setAlignment(Pos.CENTER);
                 grid.setHalignment(showTime, javafx.geometry.HPos.CENTER);
                 
                 if( count < 2*timeRailway.get(b-1).size() )
@@ -311,6 +359,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     this.grid.getColumnConstraints().add(new ColumnConstraints(83));
                     column++;
                     Label titleEE = new Label("ขบวน A");
+                    titleEE.setPrefSize(81, 38);
+                    if((column)%2==0) titleEE.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    else              titleEE.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
+                    titleEE.setAlignment(Pos.CENTER);
                     titleEE.setFont(fontSmallR);
                     this.grid.add(titleEE, column, 0);
                     grid.setHalignment(titleEE, javafx.geometry.HPos.CENTER);
@@ -323,6 +375,12 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
             this.grid.getRowConstraints().add(new RowConstraints(40));
             Label titleDD = new Label("สถานี");
             Label titleF = new Label("ขบวน B ");
+            titleDD.setPrefSize(81, 38);
+            titleDD.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+            titleDD.setAlignment(Pos.CENTER);
+            titleF.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+            titleF.setAlignment(Pos.CENTER);
+            titleF.setPrefSize(81, 38);
             titleF.setFont(fontSmallR);
             titleDD.setFont(fontSmallR);
             this.grid.add(titleDD, 0, 2*subRailway.get(b-1).size()+1);
@@ -336,6 +394,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 this.grid.getRowConstraints().add(new RowConstraints(40));
                 station = new Label(subRailway.get(b-1).get(subRailway.get(b-1).size() - i - 1));
                 station.setFont(fontSmallR);
+                station.setPrefSize(81, 38);
+                if(i%2==0) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                station.setAlignment(Pos.CENTER);
                 grid.setHalignment(station, javafx.geometry.HPos.CENTER);
                 this.grid.add(station, 0 , 2*subRailway.get(b-1).size() + i +2);
             }
@@ -344,6 +406,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 this.grid.getRowConstraints().add(new RowConstraints(40));
                 station = new Label(subRailway.get(b-1).get(i));
                 station.setFont(fontSmallR);
+                station.setPrefSize(81, 38);
+                if(i%2==1) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                station.setAlignment(Pos.CENTER);
                 grid.setHalignment(station, javafx.geometry.HPos.CENTER);
                 this.grid.add(station, 0 , 3*subRailway.get(b-1).size() + i +1);
             }
@@ -360,6 +426,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
            
                 showTime = initTime(hour,minute);
                 showTime.setFont(fontSmallR);
+                showTime.setPrefSize(81, 38);
+                if(column%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                else            showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                showTime.setAlignment(Pos.CENTER);
                 this.grid.add(showTime,column, 2*subRailway.get(b-1).size() + count+2);
                 grid.setHalignment(showTime, javafx.geometry.HPos.CENTER);
                
@@ -379,6 +449,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     column++;
                     Label titleDDD = new Label("ขบวน B");
                     titleDDD.setFont(fontSmallR);
+                    titleDDD.setPrefSize(81, 38);
+                    if((column)%2==0) titleDDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    else              titleDDD.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
+                    titleDDD.setAlignment(Pos.CENTER);
                     this.grid.add(titleDDD, column, 2*subRailway.get(b-1).size()+1);
                     grid.setHalignment(titleDDD, javafx.geometry.HPos.CENTER);
                     count = 0;
@@ -388,13 +462,21 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
            
             switch(b)
             {
-                case 1:   this.title.setText("ตารางการเดินรถแบบเต็ม สาย Green ");      
+                case 1:   this.title.setText("ตารางการเดินรถแบบเต็ม สาย Green ");   
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
                              break;
                 case 2:   this.title.setText("ตารางการเดินรถแบบเต็ม สาย Purple ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Purple;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Purple;");
                               break;  
                 case 3:   this.title.setText("ตารางการเดินรถแบบเต็ม สาย Red ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Red;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Red;");
                              break;
                 case 4:   this.title.setText("ตารางการเดินรถแบบเต็ม สาย Blue ");
+                this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Blue;");
+                this.btnShow2.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Blue;");
                             break;
             }
         }
