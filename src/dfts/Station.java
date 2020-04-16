@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import java.io.Serializable;
 
 public class Station implements Serializable{
+    private static final long serialVersionUID = 2L;
     private String name = null;
     private int rating = 0; 
     private double persen = 0.0;
@@ -32,7 +33,7 @@ public class Station implements Serializable{
             body.getChildren().add(imageView);
             Label lbName = new Label("สถานี " + this.name);
             Label lbPersen = new Label(String.format("การใช้บริการสถานีนี้ %.2f %%", this.persen));
-            Label lbReview = new Label("\nReview : \n\t"+this.review);
+            Label lbReview = new Label(this.review);
             lbName.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 25));
             lbPersen.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
             lbReview.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
@@ -63,7 +64,7 @@ public class Station implements Serializable{
         return new VBox(body);
     } 
     
-    private ImageView setRateImage() throws FileNotFoundException{
+    public ImageView setRateImage() throws FileNotFoundException{
         String path = "src/resources/images/stations/";
         switch(this.rating){
             case 1: path += "rate01.png"; break;

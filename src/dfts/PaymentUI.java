@@ -3,6 +3,7 @@ package dfts;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -61,6 +62,8 @@ public class PaymentUI {
     private Stage primary;
     private boolean isClickUserUi = false;
     private Stage primary_mat; //MAP AND TIME
+    private String phone;
+    private double totalPrice;
     //payment
     
     public PaymentUI(Stage primary,Stage primary_mat,String start,String stop,int price,int count) throws FileNotFoundException {
@@ -276,6 +279,7 @@ public class PaymentUI {
                     itemsName.setText(String.format("\n     %s", _item));
                     //itemsCount.setText(String.format("\n%d", _count));
                     itemsPrice.setText(String.format("\n%.2f",_price*1.00 ));
+                    totalPrice = price*_count*1.00;
                     total_Price.setTextFill(Color.BLACK);
                     return;
                 }
@@ -303,7 +307,7 @@ public class PaymentUI {
             }
             else{
                 if(otp.getValue().equals(otpField.getText())){
-                    System.out.println("Pass");
+                    //System.out.println("Pass");
                     try{
                         if(status_.getText().equals("เป็นสมาชิก")){
                             User user = null;
@@ -315,6 +319,7 @@ public class PaymentUI {
                         else{
                             this.user_Display = "Guest";
                         }
+                        this.phone = phoneField.getText();
                         generateTicket();
                     }
                     catch(Exception ex){
@@ -358,6 +363,7 @@ public class PaymentUI {
                 userUi.show();
                 this.isClickUserUi = true;
                 phoneField.clear();
+                totalPrice = price*_count*1.00;
                 total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
                 itemsName.setText(String.format("\n     %s", _item));
                 //itemsCount.setText(String.format("\n%d", _count));
@@ -393,18 +399,21 @@ public class PaymentUI {
                 status_.setVisible(false);
             }
             else if(phoneField.getLength()==10){
-                System.out.println("Do");
+                //System.out.println("Do " + this.member.size());
                 btnPay.setDisable(false);
                 boolean isMember = false;
                 for(var x : this.member){
+                    //System.out.println(x + " and " + phoneField.getText());
                     if(phoneField.getText().equals(x)){
                         isMember = true;
+                        //System.out.println("Yes");
                         break;
                     }
                 }
                 if(isMember){
                     status_.setText("เป็นสมาชิก");
                     status_.setTextFill(Color.GREENYELLOW);
+                    totalPrice = price*_count*0.95;
                     total_Price.setText(String.format("%.2f\n", _price*_count*.95));
                     itemsName.setText(String.format("\n     %s\n\n     %s", _item,"ส่วนลดจากการเป็นสมาชิก"));
                     //itemsCount.setText(String.format("\n%d\n\n%d", _count,_count));
@@ -414,6 +423,7 @@ public class PaymentUI {
                 else{
                     status_.setText("ไม่เป็นสมาชิก");
                     status_.setTextFill(Color.GRAY);
+                    totalPrice = price*_count*1.00;
                     total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
                     itemsName.setText(String.format("\n     %s", _item));
                     //itemsCount.setText(String.format("\n%d", _count));
@@ -427,6 +437,7 @@ public class PaymentUI {
                 btnPay.setDisable(true);
                 status_.setText("กรุณาป้อนหมายเลขให้ครบ 10 หลัก");
                 status_.setTextFill(Color.RED);
+                totalPrice = price*_count*1.00;
                 total_Price.setText(String.format("%.2f\n", _price*_count*1.00));
                 itemsName.setText(String.format("\n     %s", _item));
                 //itemsCount.setText(String.format("\n%d", _count));
@@ -492,7 +503,7 @@ public class PaymentUI {
             bgTickle.setLayoutX(-262);
             bgTickle.setLayoutY(-105);
             //System.out.println(i);
-            System.out.println("Ticket : " + String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i));
+            //System.out.println("Ticket : " + String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i));
             ImageView QR = new ImageView(new Image(qr.getQRCode(String.format("ticket_from_%s_to_%s_Number_%d",this.__start,this.__stop,i))));
             
             Label start = getLabel(String.format("%s", this.__start));
@@ -550,7 +561,7 @@ public class PaymentUI {
                //
                Node topNode = childs.get(0);
                topNode.toFront();
-           }
+            }
         });
 
         hboxCenter.getChildren().addAll(lbutton,stackPane,rButton);
@@ -565,18 +576,53 @@ public class PaymentUI {
         btnSaveAll.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
         btnSaveAll.setPrefSize(220, 60);
         HBox.setMargin(btnSaveAll, new Insets(20,10,10,10));
+        btnSaveAll.setOnAction((e)->{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddyyyyhhmmss");
+            //System.out.println(String.format("Payment_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            saveAsPng(takeShotPayment(),String.format("Payment_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            for(int i=0;i<__count;i++){
+                //System.out.println(String.format("%d : Ticket_from_%s_to_%s_%s",i,this.__start,this.__stop,simpleDateFormat.format(new Date())));
+                saveAsPng(takeShotTicket(i),String.format("Ticket_%d_from_%s_to_%s_%s",i,this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setContentText("อยู่ใน C:/DFTS_PROJECT");
+            alert.setHeaderText("บันทึกใบเสร็จและตั๋วทั้งหมด เสร็จแล้ว");
+            alert.showAndWait();
+        });
         
         Button btnSave1 = new Button("บันทึกเฉพาะตั๋ว (ทั้งหมด) ");
         btnSave1.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
         btnSave1.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
         btnSave1.setPrefSize(220, 60);
         HBox.setMargin(btnSave1, new Insets(20,10,10,10));
+        btnSave1.setOnAction((e)->{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddyyyyhhmmss");
+            for(int i=0;i<__count;i++){
+                //System.out.println(String.format("%d : Ticket_from_%s_to_%s_%s",i,this.__start,this.__stop,simpleDateFormat.format(new Date())));
+                saveAsPng(takeShotTicket(i),String.format("Ticket_%d_from_%s_to_%s_%s",i,this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setContentText("อยู่ใน C:/DFTS_PROJECT");
+            alert.setHeaderText("บันทึกตั๋วทั้งหมด เสร็จแล้ว");
+            alert.showAndWait();
+        });
         
         Button btnSave2 = new Button("บันทึกเฉพาะตั๋ว (ใบนี้) ");
         btnSave2.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
         btnSave2.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
         btnSave2.setPrefSize(220, 60);
         HBox.setMargin(btnSave2, new Insets(20,10,10,10));
+        btnSave2.setOnAction((e)->{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddyyyyhhmmss");
+            saveAsPng(takeShotTicket(-1),String.format("Ticket_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(this.primary_mat);
+            alert.setContentText("อยู่ใน C:/DFTS_PROJECT");
+            alert.setHeaderText("บันทึกเฉพาะตั๋วใบนี้ เสร็จแล้ว");
+            alert.showAndWait();
+        });
         
         Button btnSave3 = new Button("บันทึกเฉพาะใบเสร็จ");
         btnSave3.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: linear-gradient(#FFFFFF, #FFFFFF);-fx-border-color: white; -fx-border-width: 1 1 1 1;");
@@ -586,8 +632,8 @@ public class PaymentUI {
         btnSave3.setOnAction((ActionEvent e)->{
             //System.out.println("!!!debug :::: " + this.__start);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddyyyyhhmmss");
-            System.out.println(String.format("Ticket_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
-            saveAsPng(takeShot(),String.format("Ticket_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            System.out.println(String.format("Payment_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
+            saveAsPng(takeShotPayment(),String.format("Payment_from_%s_to_%s_%s",this.__start,this.__stop,simpleDateFormat.format(new Date())));
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.initOwner(this.primary_mat);
             alert.setContentText("อยู่ใน C:/DFTS_PROJECT");
@@ -629,7 +675,15 @@ public class PaymentUI {
         
         hbox.getChildren().addAll(title,btnClose);
         
-        
+        /*
+        ------------------- Write to DB ---------------------
+        */
+        SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+        //System.out.println(String.format("%s_%s_%s_%d_%s_%.2f", this.phone,this.__start,this.__stop,this.__count,date.format(new Date()),this.totalPrice));
+        SaveToDB(String.format("%s_%s_%s_%d_%s_%.2f", this.phone,this.__start,this.__stop,this.__count,date.format(new Date()),this.totalPrice));
+        /*
+        ------------------------------------------------------
+        */
         this.body.setTop(hbox);
         this.body.setCenter(hboxCenter);
         this.body.setBottom(hboxSave);
@@ -679,7 +733,19 @@ public class PaymentUI {
 
         
         // </editor-fold>;
-        
+    }
+    
+    private void SaveToDB(String out){
+        out += '\n';
+        // <editor-fold defaultstate="collapsed" desc="Compiled code">
+        try(FileWriter fw=new FileWriter("src/resources/data/sale.bin",true);){  
+            for (int i = 0; i < out.length(); i++) 
+                fw.write(out.charAt(i));
+        }
+        catch(Exception e){
+            
+        }
+        // </editor-fold>;
     }
     
     private void loadMember() {
@@ -701,7 +767,7 @@ public class PaymentUI {
             //System.out.println(f.getName());
             String[] name = ((String)f.getName()).split(".user");
             this.member.add(name[0]);
-            System.out.println("member : " + name[0]);
+            //System.out.println("member : " + name[0]);
         }
         // </editor-fold>;
     }
@@ -712,11 +778,24 @@ public class PaymentUI {
         // </editor-fold>;
     }
     
-    public BorderPane takeShot(){
+    private Node takeShotTicket(int index){
+        if(index == -1){
+            ObservableList<Node> childs = this.stackPane.getChildren();
+            Node topNode = childs.get(childs.size()-1);
+            return topNode;
+        }
+        else{
+            ObservableList<Node> childs = this.stackPane.getChildren();
+            return childs.get(index);
+        }
+        
+    }
+    
+    private BorderPane takeShotPayment(){
         return this.mainPayment;
     }
     
-    public static final void saveAsPng(final Node NODE, final String FILE_NAME) {
+    private static final void saveAsPng(final Node NODE, final String FILE_NAME) {
         final WritableImage SNAPSHOT = NODE.snapshot(new SnapshotParameters(), null);
         final String        NAME     = FILE_NAME.replace("\\.[a-zA-Z]{3,4}", "");
         final File          FILE     = new File("C:\\DFTS_PROJECT\\" + NAME + ".png");

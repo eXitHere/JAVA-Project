@@ -31,14 +31,16 @@ public class TimeTableDrive extends Application{
         List<List<String>> timeRailway = new ArrayList<>();
         readData(nameStation,nameRailway,subRailway,timeRailway);
         
-        System.out.println(subRailway.get(0));
+        TimeTableUi U = new TimeTableUi(nameStation,nameRailway,subRailway,timeRailway);
         
-        for(var x : subRailway){
-            for(var y : x){
-                System.out.print(y + " ,");
-            }
-            System.out.println("");
-        }
+ //       System.out.println(subRailway.get(0));
+        
+//        for(var x : subRailway){
+//            for(var y : x){
+//                System.out.print(y + " ,");
+//            }
+//            System.out.println("");
+//        }
         
         TimeTableUi ui = new TimeTableUi();
         stage.setScene(new Scene(ui.getBody(),1080,720));
@@ -70,5 +72,9 @@ public class TimeTableDrive extends Application{
             timeRailway.add(Arrays.asList(bufReturn.get(lastIndex).split(",")));
             lastIndex++;
         }
+    }
+
+    private void TimeTableUi(List<String> nameStation, List<String> nameRailway, List<List<String>> subRailway, List<List<String>> timeRailway) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

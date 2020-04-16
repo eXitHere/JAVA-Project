@@ -108,6 +108,11 @@ public class UserUi {
         };
         // </editor-fold>;
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+        
+        this.dialogEdit.setOnHidden((e)->{
+            showMain();
+        });
+        
         GridPane grid = new GridPane();
         Scene scene = new Scene(grid,550,650);
         this.dialogEdit.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
@@ -457,6 +462,9 @@ public class UserUi {
         // </editor-fold>;
         
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+        this.dialogCreate.setOnHidden((e)->{
+            showMain();
+        });
         GridPane grid = new GridPane();
         Scene scene = new Scene(grid,550,650);
         this.dialogCreate.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));

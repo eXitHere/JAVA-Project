@@ -32,7 +32,7 @@ public class MapCode {
         this.v = this.nameStation.size(); 
         initAdjList();
         initList();
-    } 
+    }
     
     @SuppressWarnings("unchecked") 
     private void initAdjList(){ 

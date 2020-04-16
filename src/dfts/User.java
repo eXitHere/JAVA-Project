@@ -76,6 +76,14 @@ public class User implements Serializable{
         return birthDay;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }

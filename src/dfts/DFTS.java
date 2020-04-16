@@ -74,7 +74,6 @@ public class DFTS extends Application{
     }
 
     public VBox addLVBox() throws FileNotFoundException { // Main left
-        
         Font font = Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 24);
         VBox vbox = new VBox();
         //vbox.setPadding(new Insets(15, 12, 15, 12));
@@ -89,8 +88,10 @@ public class DFTS extends Application{
             ImageView Logo = new ImageView(logo);
             Logo.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                 if(this.adminClick==2){
-                    AdminSite admin = new AdminSite(this.mainStage);
-                    admin.show();
+                    try{
+                        AdminSite admin = new AdminSite(this.mainStage);
+                        admin.authen(); 
+                    }catch(Exception e){System.out.println(e);};
                     this.mainStage.hide();
                     this.adminClick = 0;
                 }
@@ -843,11 +844,18 @@ public class DFTS extends Application{
         stage.setTitle("DFTS");
         stage.setScene(mainScene);
         this.mainBorder.setCenter(mainPage.get("main")); // set main show!
-        stage.show();
+        //stage.show();
         this.load = new Loading(stage);
         this.mainStage = stage;
         //mapTime.show(mapCode.getPath("Lobster","Avocado"));
         //stage.hide();
+        
+        
+        /*-----Debug-----*/
+        try{
+            AdminSite admin = new AdminSite(this.mainStage);
+           admin.authen(); 
+        }catch(Exception e){e.printStackTrace();};
     }
     
     
