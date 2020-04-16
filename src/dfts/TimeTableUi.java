@@ -8,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -190,7 +189,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.grid.getChildren().clear();
         //this.grid.setGridLinesVisible(true);
                  
-        System.out.println("a: "+a+" b: "+b);
+        //System.out.println("a: "+a+" b: "+b);
             
         if(a==1)
         {
