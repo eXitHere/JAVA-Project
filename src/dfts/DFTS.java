@@ -373,12 +373,12 @@ public class DFTS extends Application{
         //Event zone
         combo_Start.setOnAction(new EventHandler<ActionEvent>(){ // 1
             @Override public void handle(ActionEvent e){
-                    try{
-                    if(combo_Start.getValue() != null){
-                        manageMark(2, (String) combo_Start.getValue());
-                    }
-                    }catch(Exception ex){};
-               }
+                try{
+                if(combo_Start.getValue() != null){
+                    manageMark(2, (String) combo_Start.getValue());
+                }
+                }catch(Exception ex){};
+            }
         });
         
         combo_StartStation.setOnAction(new EventHandler<ActionEvent>(){ // 2
