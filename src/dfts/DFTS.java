@@ -69,6 +69,8 @@ public class DFTS extends Application{
     
     private int adminClick = 0;
     
+    private TimeTableUi timeTableUi;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -784,9 +786,7 @@ public class DFTS extends Application{
     }
     
     public BorderPane addTimePane(){ //Time Page
-        BorderPane body = new BorderPane();
-        
-        return body;
+        return timeTableUi.getBody();
     }   
     
     public BorderPane addMainPane() throws FileNotFoundException{
@@ -831,6 +831,7 @@ public class DFTS extends Application{
     @Override
     public void init() throws Exception{
         readData();
+        this.timeTableUi = new TimeTableUi(this.nameStation,this.nameRailway,this.subRailway,this.timeRailway);
         this.mainBorder.setLeft(addLVBox());
         this.mainBorder.setCenter(addMainPane());
     }

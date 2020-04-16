@@ -39,7 +39,7 @@ public class Station implements Serializable{
             lbReview.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
             lbName.setStyle("-fx-text-fill:Blue;");
             lbPersen.setStyle("-fx-text-fill:Black;");
-            lbReview.setWrapText(true);
+            //lbReview.setWrapText(true);
             lbReview.setStyle("-fx-text-fill:Black;");
             lbReview.setMinSize(400, 200);
             lbReview.setPrefSize(400, 200);

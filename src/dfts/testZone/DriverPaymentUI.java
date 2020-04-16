@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package dfts;
+package dfts.testZone;
 
 import java.io.FileNotFoundException;
 import javafx.application.Application;

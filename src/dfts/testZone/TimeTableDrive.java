@@ -1,5 +1,6 @@
 package dfts.testZone;
 
+import dfts.TimeTableUi;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class TimeTableDrive extends Application{
         List<List<String>> timeRailway = new ArrayList<>();
         readData(nameStation,nameRailway,subRailway,timeRailway);
         
-        TimeTableUi U = new TimeTableUi(nameStation,nameRailway,subRailway,timeRailway);
+        TimeTableUi ui = new TimeTableUi(nameStation,nameRailway,subRailway,timeRailway);
         
  //       System.out.println(subRailway.get(0));
         
@@ -42,7 +43,7 @@ public class TimeTableDrive extends Application{
 //            System.out.println("");
 //        }
         
-        TimeTableUi ui = new TimeTableUi();
+       // TimeTableUi ui = new TimeTableUi();
         stage.setScene(new Scene(ui.getBody(),1080,720));
         stage.show();
     }

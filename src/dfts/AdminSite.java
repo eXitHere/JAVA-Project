@@ -294,12 +294,12 @@ public class AdminSite {
         
         FilteredList<Label> filteredData = new FilteredList<>(entriesStation, s -> true);
         search.textProperty().addListener(obs->{
-            String filter = search.getText(); 
+            String filter = search.getText().toUpperCase(); 
             if(filter == null || filter.length() == 0) {
                 filteredData.setPredicate(s -> true);
             }
             else {
-                filteredData.setPredicate(s -> s.getText().contains(filter));
+                filteredData.setPredicate(s -> s.getText().toUpperCase().contains(filter));
             }
         });
         
