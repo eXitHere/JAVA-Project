@@ -33,6 +33,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -70,6 +71,8 @@ public class DFTS extends Application{
     private int adminClick = 0;
     
     private TimeTableUi timeTableUi;
+    
+    private AboutMeUI aboutMeUi;
     
     public static void main(String[] args) {
         launch(args);
@@ -134,7 +137,21 @@ public class DFTS extends Application{
         btnUser.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
         VBox.setMargin(btnUser, new Insets(3, 10, 3, 10));
         
-        vbox.getChildren().addAll(btnHome, btnMap, btnTime,btnUser);
+        Button btnManual = new Button("วิธีใช้งาน");
+        btnManual.setFont(font);
+        btnManual.setPrefSize(180, 60);
+        btnManual.prefWidthProperty().bind(vbox.widthProperty());
+        btnManual.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
+        VBox.setMargin(btnManual, new Insets(50, 10, 3, 10));
+        
+        Button btnAboutme = new Button("ผู้จัดทำ");
+        btnAboutme.setFont(font);
+        btnAboutme.setPrefSize(180, 60);
+        btnAboutme.prefWidthProperty().bind(vbox.widthProperty());
+        btnAboutme.setStyle("-fx-background-color: linear-gradient(#A51E22, #BC0D1B); -fx-text-fill: white;");
+        VBox.setMargin(btnAboutme, new Insets(3, 10, 3, 10));
+        
+        vbox.getChildren().addAll(btnHome, btnMap, btnTime,btnUser,btnManual,btnAboutme);
         
         //Event Zone
         //Click event
@@ -174,6 +191,10 @@ public class DFTS extends Application{
             //this.mainBorder.setCenter(mainPage.get("time"));
         });
         
+        btnAboutme.setOnAction((ActionEvent e) -> {
+            this.mainBorder.setCenter(mainPage.get("aboutme"));
+        });
+        
         //Drop Shadow
         
         // <editor-fold defaultstate="collapsed" desc="Event shadow">
@@ -208,6 +229,20 @@ public class DFTS extends Application{
                 
         btnUser.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
             btnUser.setEffect(null);
+        });
+        btnManual.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnManual.setEffect(shadow);
+        });
+                
+        btnManual.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnManual.setEffect(null);
+        });
+        btnAboutme.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            btnAboutme.setEffect(shadow);
+        });
+                
+        btnAboutme.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            btnAboutme.setEffect(null);
         });
         // </editor-fold>;
         
@@ -789,12 +824,18 @@ public class DFTS extends Application{
         return timeTableUi.getBody();
     }   
     
+    public BorderPane addAboutMePane(){
+        BorderPane body = new BorderPane();
+        body.setCenter(this.aboutMeUi.getBody());
+        return body;
+    }
+    
     public BorderPane addMainPane() throws FileNotFoundException{
         BorderPane mainPane = new BorderPane();
         mainPage.put("main",addHomePane());
         mainPage.put("map",addMapPane());
         mainPage.put("time",addTimePane());
-        
+        mainPage.put("aboutme",addAboutMePane());
         //mainPane.setCenter(combo_box);
         return mainPane;
     }
@@ -830,15 +871,18 @@ public class DFTS extends Application{
     
     @Override
     public void init() throws Exception{
-        readData();
-        this.timeTableUi = new TimeTableUi(this.nameStation,this.nameRailway,this.subRailway,this.timeRailway);
-        this.mainBorder.setLeft(addLVBox());
-        this.mainBorder.setCenter(addMainPane());
+        
     }
     
     @Override
     public void start(Stage stage) throws Exception {
+        readData();
         mkdir();
+        this.load = new Loading(stage);
+        this.aboutMeUi = new AboutMeUI(stage);
+        this.timeTableUi = new TimeTableUi(this.nameStation,this.nameRailway,this.subRailway,this.timeRailway);
+        this.mainBorder.setLeft(addLVBox());
+        this.mainBorder.setCenter(addMainPane());
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
@@ -846,7 +890,6 @@ public class DFTS extends Application{
         stage.setScene(mainScene);
         this.mainBorder.setCenter(mainPage.get("main")); // set main show!
         //stage.show();
-        this.load = new Loading(stage);
         this.mainStage = stage;
         //mapTime.show(mapCode.getPath("Lobster","Avocado"));
         //stage.hide();
