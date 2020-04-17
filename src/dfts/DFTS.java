@@ -116,14 +116,14 @@ public class DFTS extends Application{
         btnHome.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
         VBox.setMargin(btnHome, new Insets(10,10, 3, 10));
         
-        Button btnMap = new Button("แผนที่");
+        Button btnMap = new Button("สถานี");
         btnMap.setFont(font);
         btnMap.setPrefSize(180, 60);
         btnMap.prefWidthProperty().bind(vbox.widthProperty());
         btnMap.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B); -fx-text-fill: white;");
         VBox.setMargin(btnMap, new Insets(3, 10, 3, 10));   
         
-        Button btnTime = new Button("ตารางเดินรถ");
+        Button btnTime = new Button("ตารางเวลา");
         btnTime.setFont(font);
         btnTime.setPrefSize(180, 60);
         btnTime.prefWidthProperty().bind(vbox.widthProperty());
@@ -170,7 +170,7 @@ public class DFTS extends Application{
         
         btnMap.setOnAction((ActionEvent e) -> {
             //System.out.println("Map Clicked!");
-            this.mainBorder.setCenter(mainPage.get("map"));
+            this.mainBorder.setCenter(mainPage.get("station"));
             
         });
         
@@ -196,7 +196,6 @@ public class DFTS extends Application{
         });
         
         //Drop Shadow
-        
         // <editor-fold defaultstate="collapsed" desc="Event shadow">
         
         btnHome.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
@@ -814,7 +813,7 @@ public class DFTS extends Application{
         // </editor-fold>;
     }
     
-    public BorderPane addMapPane(){  // Map Page
+    public BorderPane addStationPane(){  // Map Page
         BorderPane body = new BorderPane();
         
         return body;
@@ -833,7 +832,7 @@ public class DFTS extends Application{
     public BorderPane addMainPane() throws FileNotFoundException{
         BorderPane mainPane = new BorderPane();
         mainPage.put("main",addHomePane());
-        mainPage.put("map",addMapPane());
+        mainPage.put("station",addStationPane());
         mainPage.put("time",addTimePane());
         mainPage.put("aboutme",addAboutMePane());
         //mainPane.setCenter(combo_box);

@@ -1,5 +1,6 @@
 package dfts;
 
+import dfts.MyMap;
 import static java.lang.Math.ceil;
 import java.util.ArrayList; 
 import java.util.Collection;

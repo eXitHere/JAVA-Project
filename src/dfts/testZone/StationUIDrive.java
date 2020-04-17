@@ -1,6 +1,6 @@
 package dfts.testZone;
 
-import dfts.TimeTableUi;
+import dfts.StationUI;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,41 +14,30 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Thana
- */
-public class TimeTableDrive extends Application{
+public class StationUIDrive extends Application{
     
+    List<String> nameStation = new ArrayList<>();
+    List<String> nameRailway = new ArrayList<>();
+    List<List<String>> subRailway = new ArrayList<>();
+    List<List<String>> timeRailway = new ArrayList<>();
+        
     public static void main(String[] args) {
+        
         launch(args);
     }
     
     @Override
-    public void start(Stage stage) throws Exception {
-        List<String> nameStation = new ArrayList<>();
-        List<String> nameRailway = new ArrayList<>();
-        List<List<String>> subRailway = new ArrayList<>();
-        List<List<String>> timeRailway = new ArrayList<>();
-        readData(nameStation,nameRailway,subRailway,timeRailway);
-        System.out.println(nameStation);
-        TimeTableUi ui = new TimeTableUi(nameStation,nameRailway,subRailway,timeRailway);
+    public void start(Stage stage) throws IOException{
         
- //       System.out.println(subRailway.get(0));
-        
-        for(var x : subRailway){
-            for(var y : x){
-                System.out.print(y + " ,");
-            }
-            System.out.println("");
-        }
-        
-       // TimeTableUi ui = new TimeTableUi();
-        stage.setScene(new Scene(ui.getBody(),1080,720));
+        readData();
+        //System.out.println(nameStation);
+        StationUI ui = new StationUI(nameStation);
+        Scene scene = new Scene(ui.getBody(),1080,720);
+        stage.setScene(scene);
         stage.show();
     }
     
-    private static void readData(List<String> nameStation,List<String> nameRailway,List<List<String>> subRailway,List<List<String>> timeRailway) throws FileNotFoundException, IOException{
+    private void readData() throws FileNotFoundException, IOException{
         String line;
         List<String> bufReturn;
         bufReturn = new ArrayList<>();
@@ -74,5 +63,4 @@ public class TimeTableDrive extends Application{
             lastIndex++;
         }
     }
-
 }

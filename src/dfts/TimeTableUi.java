@@ -10,6 +10,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Shadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -76,7 +79,55 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.timeRailway = D;
         
         this.body.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B)");
+        // <editor-fold defaultstate="collapsed" desc="DropShadow">
+        this.btnShow1.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnShow1.setEffect(new DropShadow());
+        });
+                
+        this.btnShow1.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnShow1.setEffect(null);
+        });
         
+        this.btnShow2.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnShow2.setEffect(new DropShadow());
+        });
+                
+        this.btnShow2.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnShow2.setEffect(null);
+        });
+        
+        this.btnSub1.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnSub1.setEffect(new DropShadow());
+        });
+                
+        this.btnSub1.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnSub1.setEffect(null);
+        });
+        
+        this.btnSub2.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnSub2.setEffect(new DropShadow());
+        });
+                
+        this.btnSub2.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnSub2.setEffect(null);
+        });
+        
+        this.btnSub3.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnSub3.setEffect(new DropShadow());
+        });
+                
+        this.btnSub3.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnSub3.setEffect(null);
+        });
+        
+        this.btnSub4.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            this.btnSub4.setEffect(new DropShadow());
+        });
+                
+        this.btnSub4.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            this.btnSub4.setEffect(null);
+        });
+        // </editor-fold>;
         this.btnShow1.setStyle("-fx-background-color: linear-gradient(#FFFFFF, #FFFFFF); -fx-text-fill: Green;");
         this.btnShow1.setPrefSize(180, 60);
         this.btnShow1.setFont(font);
@@ -86,22 +137,22 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.btnShow2.setFont(font);
         
         this.hboxTop.getChildren().addAll(this.btnShow1,this.btnShow2);
-        this.hboxTop.setAlignment(Pos.CENTER);
+        this.hboxTop.setAlignment(Pos.CENTER_LEFT);
                                     // Top Left buttom right
-        this.hboxTop.setPadding(new Insets(40,10,10,160));
-        HBox.setMargin(this.btnShow1, new Insets(0,50,0,50));
+        this.hboxTop.setPadding(new Insets(40,150,10,210));
+        HBox.setMargin(this.btnShow1, new Insets(0,20,0,20));
        
         changeGrid();
         this.btnShow1.setOnAction((ActionEvent e)->{
             //System.out.println("btnShow1 clicked");
             a=1;          
-            b=1;
+            //b=1;
             changeGrid();
         });
         this.btnShow2.setOnAction((ActionEvent e)->{
             //System.out.println("btnShow2 clicked");
             a=2;          
-            b=1;
+            //b=1;
             changeGrid();
         });
         
@@ -147,10 +198,10 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.btnSub4.setPrefSize(200, 60);
         this.btnSub4.setFont(font);
         
-        vboxLeft.setMargin(this.btnSub1, new Insets(10,0,10,0));
+        vboxLeft.setMargin(this.btnSub1, new Insets(5,0,5,0));
         vboxLeft.setMargin(this.btnSub2, new Insets(5,0,5,0));
         vboxLeft.setMargin(this.btnSub3, new Insets(5,0,5,0));
-        vboxLeft.setMargin(this.btnSub4, new Insets(5,0,10,0));
+        vboxLeft.setMargin(this.btnSub4, new Insets(5,0,5,0));
         
         this.vboxLeft.getChildren().addAll(this.btnSub1,this.btnSub2,this.btnSub3,this.btnSub4);
         this.vboxLeft.setPadding(new Insets(80,10,30,10));
@@ -160,7 +211,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.title.setStyle("-fx-text-fill: white;");
         vboxSubMain.setAlignment(Pos.TOP_CENTER);
         vboxSubMain.setMargin(this.title,new Insets(10));
-        vboxSubMain.setMargin(this.scrollGrid, new Insets(0,5,10,5));
+        vboxSubMain.setMargin(this.scrollGrid, new Insets(0,10,10,20));
         
         this.scrollGrid.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.scrollGrid.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -173,7 +224,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
         this.grid.setPadding(new Insets(20));
  
         this.body.setTop(this.hboxTop);
-        this.body.setLeft(this.vboxLeft);
+        this.body.setRight(this.vboxLeft);
         this.body.setCenter(this.vboxSubMain);
         
     }
