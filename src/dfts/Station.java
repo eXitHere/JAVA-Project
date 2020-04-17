@@ -14,7 +14,7 @@ import javafx.scene.text.Font;
 import java.io.Serializable;
 
 public class Station implements Serializable{
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 1L;
     private String name = null;
     private int rating = 0; 
     private double persen = 0.0;
