@@ -388,7 +388,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 showTime.setFont(fontSmallR);
                 this.grid.add(showTime,column,count+1);
                 showTime.setPrefSize(81, 38);
-                if((column)%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                if((count)%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
                 else              showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                 showTime.setAlignment(Pos.CENTER);
                 grid.setHalignment(showTime, javafx.geometry.HPos.CENTER);
@@ -410,7 +410,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     column++;
                     Label titleEE = new Label("ขบวน A");
                     titleEE.setPrefSize(81, 38);
-                    if((column)%2==0) titleEE.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    if((count)%2==0) titleEE.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
                     else              titleEE.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
                     titleEE.setAlignment(Pos.CENTER);
                     titleEE.setFont(fontSmallR);
@@ -426,9 +426,9 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
             Label titleDD = new Label("สถานี");
             Label titleF = new Label("ขบวน B ");
             titleDD.setPrefSize(81, 38);
-            titleDD.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+            titleDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
             titleDD.setAlignment(Pos.CENTER);
-            titleF.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+            titleF.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
             titleF.setAlignment(Pos.CENTER);
             titleF.setPrefSize(81, 38);
             titleF.setFont(fontSmallR);
@@ -477,7 +477,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 showTime = initTime(hour,minute);
                 showTime.setFont(fontSmallR);
                 showTime.setPrefSize(81, 38);
-                if(column%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                if(count%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
                 else            showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                 showTime.setAlignment(Pos.CENTER);
                 this.grid.add(showTime,column, 2*subRailway.get(b-1).size() + count+2);
@@ -500,7 +500,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     Label titleDDD = new Label("ขบวน B");
                     titleDDD.setFont(fontSmallR);
                     titleDDD.setPrefSize(81, 38);
-                    if((column)%2==0) titleDDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    if((count)%2==0) titleDDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
                     else              titleDDD.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
                     titleDDD.setAlignment(Pos.CENTER);
                     this.grid.add(titleDDD, column, 2*subRailway.get(b-1).size()+1);
