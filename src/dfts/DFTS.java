@@ -41,7 +41,7 @@ import javafx.scene.text.Font;
 import javafx.util.Pair; 
 
 public class DFTS extends Application{
-    //add do asd
+    //add do haha
     private final HashMap<String, BorderPane> mainPage = new HashMap<>();
     private final BorderPane mainBorder = new BorderPane();
     private final Scene mainScene = new Scene(mainBorder,1280,720);
