@@ -39,6 +39,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -171,9 +172,29 @@ public class AdminSite {
         userPane.setCenter(displayUser());
         /*--------------------------------------*/
         
+        //this.vboxStation.setStyle("-fx-background-color: linear-gradient(#042A5A, #0B509B);");
+        //this.vboxStation.setStyle("-fx-border-color: white, Black;; -fx-border-width: 1;");
+        this.vboxStation.setPrefSize(490, 700);
+        this.vboxStation.setMaxSize(490, 700);
+        this.vboxStation.setMinSize(490, 700);
+        this.vboxStation.setPadding(new Insets(10));
+        
+        //this.vboxReadReview.setStyle("-fx-background-color: Red;");
+        //this.vboxReadReview.setStyle("-fx-border-color: white -fx-border-width: 1;");
+        this.vboxReadReview.setPrefSize(320, 700);
+        this.vboxReadReview.setMaxSize(320, 700);
+        this.vboxReadReview.setMinSize(320, 700);
+        this.vboxReadReview.setPadding(new Insets(10));
+        HBox.setMargin(this.vboxReadReview, new Insets(0,0,0,10));
+        this.vboxReadReview.setAlignment(Pos.TOP_CENTER);
+        
         /*---------------Station----------------*/
+        HBox hboxMain = new HBox();
+        hboxMain.getChildren().addAll(this.vboxStation,this.vboxReadReview);
+        hboxMain.setPadding(new Insets(10));
         stationPane.setLeft(getStationAll());
-        stationPane.setCenter(this.vboxStation);
+        stationPane.setCenter(hboxMain);
+        //stationPane.setRight();
         /*--------------------------------------*/
         
         pane.setLeft(vboxController);
@@ -185,6 +206,8 @@ public class AdminSite {
             primary.show();
         });
     }
+    
+    private VBox vboxReadReview = new VBox();
     
     private VBox vboxStation = new VBox();
     private void changeStation(String name){
@@ -222,7 +245,7 @@ public class AdminSite {
                 Button btnSave = new Button("บันทึก");
                 btnSave.setPrefSize(200, 60);
                 btnSave.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));
-                btnSave.setStyle("-fx-background-color: Blue; -fx-text-fill: white");
+                btnSave.setStyle("-fx-background-color: linear-gradient(#272945, #1B1E3A);; -fx-text-fill: white");
                 VBox.setMargin(btnSave, new Insets(20,20,20,20));
                 btnSave.setOnAction((e)->{
                     pr1.setReview(lbReview.getText());
@@ -234,6 +257,14 @@ public class AdminSite {
                 });
                 this.vboxStation.setAlignment(Pos.TOP_CENTER);
                 this.vboxStation.getChildren().addAll(body,btnSave);
+                
+                
+                btnSave.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+                    btnSave.setEffect(new DropShadow());
+                });
+                btnSave.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+                    btnSave.setEffect(null);
+                });
             }
             catch(Exception ex){
                 System.out.println(ex);
@@ -241,6 +272,74 @@ public class AdminSite {
             //System.out.println(pr1);
         }
         catch(Exception e){e.printStackTrace();}
+        
+        /* Change review !*/
+        this.vboxReadReview.getChildren().clear();
+        ScrollPane scrollpane = new ScrollPane();
+        //scrollpane.setStyle("-fx-background-color: black;");
+        //scrollpane.setStyle("-fx-border-color: white, Black;; -fx-border-width: 1;");
+        scrollpane.setPrefHeight(620);
+        Label title = new Label("รีวิวสถานี " + name);
+        try{
+            title.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 24));
+        }catch(Exception e){}
+        title.setStyle("-fx-text-fill:linear-gradient(#272945, #1B1E3A);");
+        //title.setPrefWidth(380);
+        VBox.setMargin(title, new Insets(20,10,20,10));
+        this.vboxReadReview.getChildren().addAll(title,scrollpane);
+        int ch;
+        String temp="";
+        VBox AllReview = new VBox();
+        scrollpane.setContent(AllReview);
+        scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        try(FileReader in = new FileReader(String.format("src/resources/data/%s.review",name));){
+            while ((ch=in.read())!=-1){
+                if(ch=='|'){
+                    //System.out.println(temp);
+                    VBox tempVBox = new VBox();
+                    tempVBox.setPrefSize(265, 100);
+                    tempVBox.setPadding(new Insets(10));
+                    tempVBox.setStyle("-fx-border-color: white, Black;; -fx-border-width: 1;");
+                    VBox.setMargin(tempVBox, new Insets(10));
+                    String[] spilt = temp.split("___");
+                    Label phone_ = new Label("เบอร์โทรศัพท์: " + spilt[0]);
+                    Hyperlink review_ = new Hyperlink(spilt[1]);
+                    Label rating_ = new Label("ความพึงพอใจ: " + spilt[2] + " (/2)");
+                    Label date_ = new Label("วันที่: " + spilt[3]);
+                    phone_.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+                    phone_.setStyle("-fx-text-fill:black;");
+                    review_.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+                    //review_.setStyle("-fx-text-fill:black;");
+                    rating_.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+                    rating_.setStyle("-fx-text-fill:black;");
+                    date_.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 18));
+                    date_.setStyle("-fx-text-fill:black;");
+                    
+                    phone_.setPadding(new Insets(5));
+                    review_.setPadding(new Insets(5));
+                    rating_.setPadding(new Insets(5));
+                    date_.setPadding(new Insets(5));
+                    
+                    review_.setOnAction((e)->{
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("DFTS");
+                        alert.setGraphic(null);
+                        alert.initOwner(this.body);
+                        alert.setContentText("ความคิดเห็นของ: " + spilt[0]);
+                        alert.setHeaderText(spilt[1]);
+                        alert.showAndWait();
+                    });
+                    
+                    tempVBox.getChildren().addAll(phone_,review_,rating_,date_);
+                    temp ="";
+                    AllReview.getChildren().add(tempVBox);
+                }
+                else{
+                    temp+=(char)(ch);
+                }
+            }    
+        }
+        catch(Exception e){}
     }
     
     
@@ -273,7 +372,7 @@ public class AdminSite {
         });
         
         this.listStation.setPrefWidth(200);
-        this.listStation.setPrefHeight(600);
+        this.listStation.setPrefHeight(540);
         VBox.setVgrow(this.listStation, Priority.ALWAYS);
         
         // <editor-fold defaultstate="collapsed" desc="SearchBox">
@@ -310,9 +409,24 @@ public class AdminSite {
         }catch(FileNotFoundException e){e.printStackTrace();}
         // </editor-fold>;
         
-        vbox.getChildren().addAll(title,search,this.listStation);
+        Button update = new Button("อัพเดทข้อมูล");
+        update.setPrefSize(200, 60);
+        try{update.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));}catch(Exception e){}
+        update.setStyle("-fx-background-color: linear-gradient(#272945, #1B1E3A);; -fx-text-fill: white; -fx-border-color: transparent; -fx-border-width: 0;");
+        VBox.setMargin(update, new Insets(10,0,10,0));
+        vbox.getChildren().addAll(title,search,this.listStation,update);
         vbox.setPadding(new Insets(10));
+        
+        
+        update.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            update.setEffect(new DropShadow());
+        });
+        update.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            update.setEffect(null);
+        });
+                
         return vbox;
+        
     }
     
     private Label initLabelGetUser(String txt,int size,String color){
@@ -395,7 +509,7 @@ public class AdminSite {
         Button btnSave = new Button("บันทึก");
         btnSave.setPrefSize(200, 60);
         btnSave.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));
-        btnSave.setStyle("-fx-background-color: Blue; -fx-text-fill: white");
+        btnSave.setStyle("-fx-background-color: linear-gradient(#272945, #1B1E3A); -fx-text-fill: white;");
         VBox.setMargin(btnSave, new Insets(10));
         btnSave.setOnAction(btnLeftClickEvent);
         btnSave.setId("บันทึก");
@@ -444,7 +558,7 @@ public class AdminSite {
         Button btnDelete = new Button("ลบ");
         btnDelete.setPrefSize(200, 60);
         btnDelete.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));
-        btnDelete.setStyle("-fx-background-color: ORANGE; -fx-text-fill: white;");
+        btnDelete.setStyle("-fx-background-color: linear-gradient(#272945, #1B1E3A); -fx-text-fill: white;");
         VBox.setMargin(btnDelete, new Insets(10));
         btnDelete.setOnAction(btnLeftClickEvent);
         btnDelete.setId("ลบ");
