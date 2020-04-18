@@ -74,6 +74,8 @@ public class DFTS extends Application{
     
     private AboutMeUI aboutMeUi;
     
+    private StationUI statusUi;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -814,9 +816,8 @@ public class DFTS extends Application{
     }
     
     public BorderPane addStationPane(){  // Map Page
-        BorderPane body = new BorderPane();
-        
-        return body;
+        this.statusUi = new StationUI(this.nameStation);
+        return statusUi.getBody();
     }
     
     public BorderPane addTimePane(){ //Time Page

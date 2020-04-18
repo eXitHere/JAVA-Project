@@ -228,7 +228,7 @@ public class AdminSite {
                     pr1.setReview(lbReview.getText());
                     try(FileOutputStream f = new FileOutputStream(new File(String.format("src/resources/data/%s.station", name)));ObjectOutputStream o = new ObjectOutputStream(f);){
                         o.writeObject(pr1);
-                        System.out.println("Update!");
+                        //System.out.println("Update!");
                     }
                     catch(Exception a){a.printStackTrace();}
                 });
@@ -407,6 +407,15 @@ public class AdminSite {
             btnSave.setEffect(null);
         });
         
+        phoneNumberField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if(phoneNumberField.getLength()>10){
+                phoneNumberField.setText(oldValue);
+            }
+            if (!newValue.matches("\\d*")) {
+                phoneNumberField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        
         btnSave.setOnAction((e)->{  
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("DFTS REGISTER");
@@ -483,7 +492,7 @@ public class AdminSite {
  
         this.tableSale.setEditable(false);
  
-        TableColumn phoneCol = new TableColumn("เบอรืโทรศัพท์");
+        TableColumn phoneCol = new TableColumn("เบอร์โทรศัพท์");
         TableColumn stationsCol = new TableColumn("สถานี");
         TableColumn countCol = new TableColumn("จำนวนตั๋ว");
         TableColumn dateCol = new TableColumn("วันที่ซื้อ");
