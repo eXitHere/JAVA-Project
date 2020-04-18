@@ -431,7 +431,7 @@ public class StationUI {
         hboxBTN.setMaxSize(440, 80);
         hboxBTN.setPrefSize(440, 80);
         hboxBTN.setAlignment(Pos.CENTER);
-        Label Title = new Label("แสดงความคิดเห็นเพื่อนับไปปรับปรุงสถานีและให้คะแนน");
+        Label Title = new Label("แสดงความคิดเห็นเพื่อนำไปปรับปรุงสถานีและให้คะแนน");
         Title.setStyle("-fx-text-fill:white");
         Title.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Regular.ttf"), 20));
         Title.setAlignment(Pos.CENTER);

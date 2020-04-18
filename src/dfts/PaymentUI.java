@@ -736,11 +736,12 @@ public class PaymentUI {
     }
     
     private void SaveToDB(String out){
-        out += '\n';
+        //out += "\r\n";
         // <editor-fold defaultstate="collapsed" desc="Compiled code">
         try(FileWriter fw=new FileWriter("src/resources/data/sale.bin",true);){  
             for (int i = 0; i < out.length(); i++) 
                 fw.write(out.charAt(i));
+            fw.write(System.getProperty( "line.separator" ));
         }
         catch(Exception e){
             
