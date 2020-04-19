@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
@@ -40,6 +42,8 @@ public class SaleManager {
             _count[i] = 0;
         }
         
+        List<String> userNotMember = new ArrayList<>();
+        
         for(var x : sale){
             String[] temp = x.split("_");
             this.listSale.add(new Sale(temp[0], temp[1], temp[2], Integer.parseInt(temp[3]), temp[4], Double.parseDouble(temp[5])));
@@ -50,7 +54,9 @@ public class SaleManager {
                 useInMont[0][new Date(now.getDate()).getMonth()]++;
             }
             else{
+                System.out.println(now.getPhone());
                 _notMember++;
+                userNotMember.add(now.getPhone());
                 useInMont[1][new Date(now.getDate()).getMonth()]++;
             }
             day[new Date(now.getDate()).getDay()]++;
@@ -64,6 +70,18 @@ public class SaleManager {
         this.monthUse = new Pair<List<Integer>,List<Integer>>(Arrays.asList(useInMont[0]),Arrays.asList(useInMont[1]));
         this.memberUse = new Pair<Integer,Integer>(_isMember,_notMember);
         this.listCount = Arrays.asList(_count);
+        
+        
+        /*
+        Clear duplicates ! from user sale.bin
+        */
+        Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(userNotMember);
+       
+        userNotMember.clear();
+       
+        userNotMember.addAll(primesWithoutDuplicates);
+        System.out.println(userNotMember);
+        System.out.println("Size : " + userNotMember.size());
     }
     
     public String getDateNeares(){
@@ -165,9 +183,10 @@ public class SaleManager {
         for(File f:files){
             //System.out.println(f.getName());
             String[] name = ((String)f.getName()).split(".user");
-            member.add(name[0]);
+            this.member.add(name[0]);
             //System.out.println("member : " + name[0]);
         }
+        System.out.println("Member size : " + member.size());
         // </editor-fold>;
     }
 }

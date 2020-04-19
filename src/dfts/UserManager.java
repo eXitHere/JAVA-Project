@@ -51,7 +51,7 @@ public class UserManager {
             File file = new File(String.format("src/resources/data/%s.user", phone));  //creates a file instance  
             file.deleteOnExit();
         }
-        catch(Exception e){System.out.println("Do"); e.printStackTrace();}
+        catch(Exception e){e.printStackTrace();}
     }
     
     public User getInfoUser(String phone){
@@ -64,7 +64,7 @@ public class UserManager {
     }
     
     public List<String> getPhoneAll(){
-        System.out.println(this.listPhone.size());
+        //System.out.println(this.listPhone.size());
         return this.listPhone;
     }
 }
