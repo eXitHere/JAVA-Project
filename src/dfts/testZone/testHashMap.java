@@ -16,18 +16,18 @@ import java.util.Set;
  */
 public class testHashMap {
     public static void main(String[] args) {
-        List<Integer> primes = new ArrayList<Integer>();
+        List<String> primes = new ArrayList<String>();
        
-        primes.add(2);
-        primes.add(3);
-        primes.add(5);
-        primes.add(7);  //duplicate
-        primes.add(7);
-        primes.add(11);
+        primes.add("Hello");
+        primes.add("Hello");
+        primes.add("Hello");
+        primes.add("Hello");  //duplicate
+        primes.add("Hello");
+        primes.add("Hello");
        
         System.out.println("list of prime numbers : " + primes);
 
-        Set<Integer> primesWithoutDuplicates = new LinkedHashSet<Integer>(primes);
+        Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(primes);
        
         primes.clear();
        

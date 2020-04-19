@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -533,26 +534,26 @@ public class AdminSite {
         btnSave.setOnAction((e)->{  
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("DFTS REGISTER");
-            alert.setContentText("เบอร์โทร " + this.userSelected.getPhoneNumber());
-            alert.setHeaderText("ต้องการบันทึกข้อมูล");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                if(firstNameTextField.getText().isEmpty()||
-                    lastNameTextField.getText().isEmpty() ||
-                    phoneNumberField.getText().isEmpty()  ||
-                    passwordField.getText().isEmpty()     ||
-                    birthDayField.getText().isEmpty()) return;
-                this.userSelected.update(firstNameTextField.getText(), lastNameTextField.getText(), phoneNumberField.getText(), birthDayField.getText(), passwordField.getText());
-                try(FileOutputStream f = new FileOutputStream(new File(String.format("src/resources/data/%s.user",this.userSelected.getPhoneNumber())));ObjectOutputStream o = new ObjectOutputStream(f);){
-                    o.writeObject(this.userSelected); 
-                    System.out.println("Update success!");
+            try{
+                alert.setContentText("เบอร์โทร " + this.userSelected.getPhoneNumber());
+                alert.setHeaderText("ต้องการบันทึกข้อมูล");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    if(firstNameTextField.getText().isEmpty()||
+                        lastNameTextField.getText().isEmpty() ||
+                        phoneNumberField.getText().isEmpty()  ||
+                        passwordField.getText().isEmpty()     ||
+                        birthDayField.getText().isEmpty()) return;
+                    this.userSelected.update(firstNameTextField.getText(), lastNameTextField.getText(), phoneNumberField.getText(), birthDayField.getText(), passwordField.getText());
+                    try(FileOutputStream f = new FileOutputStream(new File(String.format("src/resources/data/%s.user",this.userSelected.getPhoneNumber())));ObjectOutputStream o = new ObjectOutputStream(f);){
+                        o.writeObject(this.userSelected); 
+                        System.out.println("Update success!");
+                    }
+                    catch (Exception x){
+                        System.out.println(x);
+                    }     
                 }
-                catch (Exception x){
-                    System.out.println(x);
-                }     
-            }
-            
-            
+            }catch(Exception x){}
         });
         
         Button btnDelete = new Button("ลบ");
@@ -573,23 +574,25 @@ public class AdminSite {
         btnDelete.setOnAction((e)->{
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("DFTS REGISTER");
-            alert.setContentText("เบอร์โทร " + this.userSelected.getPhoneNumber());
-            alert.setHeaderText("ต้องการลบข้อมูล");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                if(!phoneNumberField.getText().isEmpty()){
-                    userMG.RemoveUser(phoneNumberField.getText());
-                    int selectedIdx = this.listUser.getSelectionModel().getSelectedIndex();
-                    if (selectedIdx != -1) {
-                        int newSelectedIdx = (selectedIdx == this.listUser.getItems().size() - 1) ? 
-                        selectedIdx - 1 : selectedIdx;
-                        //System.out.println("Index remove " + this.listUser.getSelectionModel().getSelectedItem());
-                        this.entries.remove(this.listUser.getSelectionModel().getSelectedItem());
-                        //System.out.println("Removed" + itemToRemove);
-                        this.listUser.getSelectionModel().select(newSelectedIdx);
+            try{
+                alert.setContentText("เบอร์โทร " + this.userSelected.getPhoneNumber());
+                alert.setHeaderText("ต้องการลบข้อมูล");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    if(!phoneNumberField.getText().isEmpty()){
+                        userMG.RemoveUser(phoneNumberField.getText());
+                        int selectedIdx = this.listUser.getSelectionModel().getSelectedIndex();
+                        if (selectedIdx != -1) {
+                            int newSelectedIdx = (selectedIdx == this.listUser.getItems().size() - 1) ? 
+                            selectedIdx - 1 : selectedIdx;
+                            //System.out.println("Index remove " + this.listUser.getSelectionModel().getSelectedItem());
+                            this.entries.remove(this.listUser.getSelectionModel().getSelectedItem());
+                            //System.out.println("Removed" + itemToRemove);
+                            this.listUser.getSelectionModel().select(newSelectedIdx);
+                        }
                     }
                 }
-            }
+            }catch(Exception m){};
         });
         
         this.gridUserDisplay.add(btnSave, 0, 5);
@@ -684,11 +687,11 @@ public class AdminSite {
         List<Node> node = this.gridUserDisplay.getChildren();
         for(var x : node){
             if(x instanceof TextField)
-            if(x.getId().equals("0"))      if(user!=null) ((TextField)x).setText(user.getFirstName());   else ((TextField)x).setText("");
-            else if(x.getId().equals("1")) if(user!=null) ((TextField)x).setText(user.getLastName());    else ((TextField)x).setText("");
-            else if(x.getId().equals("2")) if(user!=null) ((TextField)x).setText(user.getBirthDay());    else ((TextField)x).setText("");
-            else if(x.getId().equals("3")) if(user!=null) ((TextField)x).setText(user.getPhoneNumber()); else ((TextField)x).setText("");
-            else if(x.getId().equals("4")) if(user!=null) ((TextField)x).setText(user.getPassword());    else ((TextField)x).setText("");
+            if(x.getId().equals("0"))      if(user!=null) {((TextField)x).setText(user.getFirstName()); ((TextField)x).setEditable(true);}  else {((TextField)x).setText(""); ((TextField)x).setEditable(false);}
+            else if(x.getId().equals("1")) if(user!=null) {((TextField)x).setText(user.getLastName());  ((TextField)x).setEditable(true);}  else {((TextField)x).setText(""); ((TextField)x).setEditable(false);}
+            else if(x.getId().equals("2")) if(user!=null) {((TextField)x).setText(user.getBirthDay());  ((TextField)x).setEditable(true);}  else {((TextField)x).setText(""); ((TextField)x).setEditable(false);}
+            else if(x.getId().equals("3")) if(user!=null) {((TextField)x).setText(user.getPhoneNumber()); ((TextField)x).setEditable(true);} else {((TextField)x).setText(""); ((TextField)x).setEditable(false);}
+            else if(x.getId().equals("4")) if(user!=null) {((TextField)x).setText(user.getPassword());   ((TextField)x).setEditable(true);} else {((TextField)x).setText(""); ((TextField)x).setEditable(false);}
         }
         this.tableSale.setItems(this.saleMG.getDataByPhone(((Label)this.listUser.getSelectionModel().getSelectedItem()).getText()));
         this.T_2.setText(String.format("%.0f ครั้ง", this.saleMG.getDetailByPhone().get(1)));
@@ -703,8 +706,15 @@ public class AdminSite {
         VBox vbox = new VBox();
         this.userMG = new UserManager();
         this.listUser = new ListView<>();
-        this.userMG.getPhoneAll().forEach((x) -> {
+        List<String> member = this.userMG.getPhoneAll();
+        member.sort(Comparator.naturalOrder());
+        member.forEach((x) -> {
             //list.getItems().add(initLabelGetUser(x,18,"Black"));
+            this.entries.add(initLabelGetUser(x,18,"BLUEVIOLET"));
+        });
+        
+        this.saleMG.getUseNotMember().forEach((x)->{
+            //System.out.println(x);
             this.entries.add(initLabelGetUser(x,18,"Black"));
         });
         

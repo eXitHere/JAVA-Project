@@ -59,7 +59,7 @@ public class UserManager {
             User user = (User)oi.readObject();
             return user;
         }
-        catch(Exception e){ System.out.println("Error!");e.printStackTrace();};
+        catch(Exception e){};
         return null;
     }
     

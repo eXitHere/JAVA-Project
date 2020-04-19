@@ -19,6 +19,7 @@ import javafx.util.Pair;
 public class SaleManager {
     private List<Sale> listSale = new ArrayList<>();
     private List<String> member = new ArrayList<>();
+    private List<String> useNotMember = new ArrayList<>();
     public SaleManager(List<String> sale) {
         //System.out.println("Do");
         loadMember(); // Load member from db
@@ -42,8 +43,7 @@ public class SaleManager {
             _count[i] = 0;
         }
         
-        List<String> userNotMember = new ArrayList<>();
-        
+        //System.out.println("Sale size : " + sale.size());
         for(var x : sale){
             String[] temp = x.split("_");
             this.listSale.add(new Sale(temp[0], temp[1], temp[2], Integer.parseInt(temp[3]), temp[4], Double.parseDouble(temp[5])));
@@ -54,9 +54,10 @@ public class SaleManager {
                 useInMont[0][new Date(now.getDate()).getMonth()]++;
             }
             else{
-                System.out.println(now.getPhone());
+                //System.out.println(now.getPhone());
                 _notMember++;
-                userNotMember.add(now.getPhone());
+                this.useNotMember.add(now.getPhone());
+                //System.out.println(now.getPhone());
                 useInMont[1][new Date(now.getDate()).getMonth()]++;
             }
             day[new Date(now.getDate()).getDay()]++;
@@ -66,6 +67,7 @@ public class SaleManager {
             
             
         }
+        //System.out.println(_isMember + " --- " + _notMember);
         this.dayUse = Arrays.asList(day);
         this.monthUse = new Pair<List<Integer>,List<Integer>>(Arrays.asList(useInMont[0]),Arrays.asList(useInMont[1]));
         this.memberUse = new Pair<Integer,Integer>(_isMember,_notMember);
@@ -75,13 +77,16 @@ public class SaleManager {
         /*
         Clear duplicates ! from user sale.bin
         */
-        Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(userNotMember);
+        //System.out.println("Size all " + this.useNotMember.size());
+        Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(this.useNotMember);
        
-        userNotMember.clear();
+        this.useNotMember.clear();
        
-        userNotMember.addAll(primesWithoutDuplicates);
-        System.out.println(userNotMember);
-        System.out.println("Size : " + userNotMember.size());
+        this.useNotMember.addAll(primesWithoutDuplicates);
+        this.useNotMember.sort(Comparator.naturalOrder());
+        //System.out.println("after remove : " + this.useNotMember.size());
+        //System.out.println(userNotMember);
+        //System.out.println("Size : " + userNotMember.size());
     }
     
     public String getDateNeares(){
@@ -95,6 +100,12 @@ public class SaleManager {
                 }
             });
         return format.format(closest);
+    }
+    
+    //ใช้บริการแต่ไม่เป็นสมาชิก
+    public List<String> getUseNotMember(){
+        //System.out.println("Return size : " + this.useNotMember.size());
+        return this.useNotMember;
     }
     
     private List<Date> dates = new ArrayList<Date>();
@@ -186,7 +197,7 @@ public class SaleManager {
             this.member.add(name[0]);
             //System.out.println("member : " + name[0]);
         }
-        System.out.println("Member size : " + member.size());
+        //System.out.println("Member size : " + member.size());
         // </editor-fold>;
     }
 }

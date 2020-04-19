@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
 
 public class SaleGenerate {
     static List<String> member;
@@ -35,14 +38,29 @@ public class SaleGenerate {
         readData();
         loadMember();
         Random random = new Random();
-        for(int i=0;i<10000;i++){
+        for(int i=0;i<1000;i++){
             //System.out.println(Math.abs(random.nextInt()%member.size()));
             genSale(member.get(Math.abs(random.nextInt()%member.size())),true);
         }
-        for(int i=0;i<1;i++){
+        //System.out.println("Member complete");
+        List<String> phoneNotmember = new ArrayList<>();
+        for(int i=0;i<100;i++){
             //System.out.println(Math.abs(random.nextInt()%member.size()));
             String phone = genPhone();
-            genSale(phone,isMember(phone));
+            phoneNotmember.add(phone);
+            //if(isMember(phone)) System.out.println("Member!");
+            phone+='\n';
+            try(FileWriter fw=new FileWriter("src/resources/data/useNotMember.bin",true);){  
+                for (int j = 0; j < phone.length(); j++) 
+                    fw.write(phone.charAt(j));
+            }
+            catch(Exception e){
+
+            }
+        }
+        for(int i=0;i<10000;i++){
+            int index = Math.abs(random.nextInt()%phoneNotmember.size());
+            genSale(phoneNotmember.get(index),isMember(phoneNotmember.get(index)));
         }
     }
     
@@ -63,13 +81,13 @@ public class SaleGenerate {
         }while(start.equals(stop));
         var output = mc.getPath(start,stop);
         int indexOutput = Math.abs(random.nextInt())%output.getValue().size();
-        LocalDate _start = LocalDate.of(2019, Month.JULY, 1);
+        LocalDate _start = LocalDate.of(2019, Month.JANUARY, 1);
         LocalDate _end = LocalDate.now();
         LocalDate randomDate = between(_start, _end);
         ZoneId defaultZoneId = ZoneId.systemDefault();
         
         Date date = Date.from(randomDate.atStartOfDay(defaultZoneId).toInstant());
-        if(date.getDay()!=4) return;
+        if(date.getDay() == 1 || date.getDay() == 5) return;
         //System.out.println(output.getKey().getKey());
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         int count = Math.abs(random.nextInt())%10+1;
@@ -77,17 +95,17 @@ public class SaleGenerate {
             SaveToDB(String.format("%s_%s_%s_%d_%s_%.2f",phone
                                                           ,mc.getName(output.getKey().getKey().get(indexOutput).get(0))
                                                           ,mc.getName(output.getKey().getKey().get(indexOutput).get(output.getKey().getKey().get(indexOutput).size()-1))
-                                                          ,count
+                                                          ,2
                                                           ,dateFormat.format(date)
-                                                          ,output.getValue().get(indexOutput)*0.95*count));
+                                                          ,output.getValue().get(indexOutput)*0.95*2));
         }
         else{
-            SaveToDB(String.format("%s_%s_%s_%d_%s_%.2f",genPhone()
+            SaveToDB(String.format("%s_%s_%s_%d_%s_%.2f",phone
                                                           ,mc.getName(output.getKey().getKey().get(indexOutput).get(0))
                                                           ,mc.getName(output.getKey().getKey().get(indexOutput).get(output.getKey().getKey().get(indexOutput).size()-1))
-                                                          ,count
+                                                          ,2
                                                           ,dateFormat.format(date)
-                                                          ,output.getValue().get(indexOutput)*1.00*count));
+                                                          ,output.getValue().get(indexOutput)*1.00*2));
         }
     }
     
