@@ -547,10 +547,10 @@ public class AdminSite {
                     this.userSelected.update(firstNameTextField.getText(), lastNameTextField.getText(), phoneNumberField.getText(), birthDayField.getText(), passwordField.getText());
                     try(FileOutputStream f = new FileOutputStream(new File(String.format("src/resources/data/%s.user",this.userSelected.getPhoneNumber())));ObjectOutputStream o = new ObjectOutputStream(f);){
                         o.writeObject(this.userSelected); 
-                        System.out.println("Update success!");
+                        //System.out.println("Update success!");
                     }
                     catch (Exception x){
-                        System.out.println(x);
+                        //System.out.println(x);
                     }     
                 }
             }catch(Exception x){}

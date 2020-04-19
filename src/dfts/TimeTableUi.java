@@ -3,6 +3,7 @@ package dfts;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -51,6 +52,8 @@ public class TimeTableUi {
     private List<String> nameRailway = new ArrayList<>();
     private List<List<String>> subRailway = new ArrayList<>();
     private List<List<String>> timeRailway = new ArrayList<>();
+    
+    private List<Integer> timeClose = Arrays.asList(1425,1410,1440,1425);
     
 //    public TimeTableUi(List<String> a, List<String> b, List<List<String>> c ,List<List<String>> d) throws FileNotFoundException
 //    {
@@ -392,7 +395,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 else              showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                 showTime.setAlignment(Pos.CENTER);
                 grid.setHalignment(showTime, javafx.geometry.HPos.CENTER);
-                
+                if(hour*60+minute==this.timeClose.get(b-1)) break;
                 if( count < 2*timeRailway.get(b-1).size() )
                 {   
                     if(count < timeRailway.get(b-1).size())
@@ -402,6 +405,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                   
                     hour = startTime / 60;
                     minute = startTime % 60;
+                    if(hour*60+minute>this.timeClose.get(b-1)) break;
                     count++;
                 }
                 else
@@ -410,7 +414,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     column++;
                     Label titleEE = new Label("ขบวน A");
                     titleEE.setPrefSize(81, 38);
-                    if((count)%2==0) titleEE.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    if((column)%2==0) titleEE.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
                     else              titleEE.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
                     titleEE.setAlignment(Pos.CENTER);
                     titleEE.setFont(fontSmallR);
@@ -457,8 +461,13 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                 station = new Label(subRailway.get(b-1).get(i));
                 station.setFont(fontSmallR);
                 station.setPrefSize(81, 38);
-                if(i%2==1) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
-                else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                if(b==1 || b ==2){
+                    if(i%2==1) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                    else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                }else{
+                    if(i%2==0) station.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                    else       station.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
+                }
                 station.setAlignment(Pos.CENTER);
                 grid.setHalignment(station, javafx.geometry.HPos.CENTER);
                 this.grid.add(station, 0 , 3*subRailway.get(b-1).size() + i +1);
@@ -473,25 +482,24 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
             
             while(hour < 24)
             {
-           
                 showTime = initTime(hour,minute);
                 showTime.setFont(fontSmallR);
                 showTime.setPrefSize(81, 38);
-                if(count%2==0) showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
+                if(count%2==0)  showTime.setStyle("-fx-background-color: FFF2CC; -fx-text-fill: black;");
                 else            showTime.setStyle("-fx-background-color: FFFFFF; -fx-text-fill: black;");
                 showTime.setAlignment(Pos.CENTER);
                 this.grid.add(showTime,column, 2*subRailway.get(b-1).size() + count+2);
                 grid.setHalignment(showTime, javafx.geometry.HPos.CENTER);
-               
+               if(hour*60+minute==this.timeClose.get(b-1)) break;
                 if( count < 2*timeRailway.get(b-1).size() )
                 {   
                     if(count < timeRailway.get(b-1).size())
                         startTime = startTime + toInt( timeRailway.get(b-1).get(count));
                     else
                         startTime = startTime + toInt( timeRailway.get(b-1).get(2*timeRailway.get(b-1).size() -1 - count));
-                  
                     hour = startTime / 60;
                     minute = startTime % 60;
+                    if(hour*60+minute>this.timeClose.get(b-1)) break;
                     count++;
                 }
                 else
@@ -500,7 +508,7 @@ public TimeTableUi(List<String> A, List<String> B, List<List<String>> C ,List<Li
                     Label titleDDD = new Label("ขบวน B");
                     titleDDD.setFont(fontSmallR);
                     titleDDD.setPrefSize(81, 38);
-                    if((count)%2==0) titleDDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
+                    if((column)%2==0) titleDDD.setStyle("-fx-background-color: FFC524; -fx-text-fill: white;");
                     else              titleDDD.setStyle("-fx-background-color: FFD15F; -fx-text-fill: white;");
                     titleDDD.setAlignment(Pos.CENTER);
                     this.grid.add(titleDDD, column, 2*subRailway.get(b-1).size()+1);
