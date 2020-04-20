@@ -76,6 +76,7 @@ public class DFTS extends Application{
     private StationUI statusUi;
     
     public static void main(String[] args) {
+        //System.out.println("Hello world");
         launch(args);
     }
 
@@ -268,6 +269,15 @@ public class DFTS extends Application{
             btnAboutme.setEffect(null);
         });
         // </editor-fold>;
+        
+        this.mainStage.setOnShown((e)->{ // Clear
+           //System.out.println("reset");
+           mainPage.remove("main");
+            try{
+                mainPage.put("main",addHomePane());
+            }catch(Exception x){};
+            this.mainBorder.setCenter(mainPage.get("main"));
+        });
         
         return vbox;
     }

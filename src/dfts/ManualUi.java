@@ -162,7 +162,7 @@ public class ManualUi {
         this.listOFImageAll.add(new ArrayList<>());
         this.listOFImageAll.add(new ArrayList<>());
         try{ // การจองตั่ว
-            System.out.println("dO");
+           // System.out.println("dO");
             this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_1.jpg")))));
             this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_2.jpg")))));
             this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_3.jpg")))));
