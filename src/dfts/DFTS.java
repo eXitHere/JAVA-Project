@@ -75,6 +75,8 @@ public class DFTS extends Application{
     
     private StationUI statusUi;
     
+    private LoadingAdmin loadingAdmin = new LoadingAdmin();
+    
     public static void main(String[] args) {
         //System.out.println("Hello world");
         launch(args);
@@ -95,10 +97,19 @@ public class DFTS extends Application{
             ImageView Logo = new ImageView(logo);
             Logo.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                 if(this.adminClick==2){
-                    try{
-                        AdminSite admin = new AdminSite(this.mainStage);
-                        admin.authen(); 
-                    }catch(Exception e){System.out.println(e);};
+                    this.loadingAdmin.show();
+                    this.admin = new AdminSite(mainStage);
+                    Thread ld = new Thread(()->{
+                        this.admin.loadDBAll();
+                        this.admin.init();
+                        Platform.runLater(() -> {
+                            this.loadingAdmin.hide();
+                            this.admin.authen();
+                        });
+                    });
+                    ld.setDaemon(true);
+                    ld.start();
+                    
                     this.mainStage.hide();
                     this.adminClick = 0;
                 }
@@ -282,6 +293,7 @@ public class DFTS extends Application{
         return vbox;
     }
     
+    private AdminSite admin;
     public void loadShow(){
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         load.show();
@@ -289,7 +301,7 @@ public class DFTS extends Application{
             @Override
                 public void run() {
                     try {
-                        Thread.sleep((int)Math.random()%2000+2000);
+                        Thread.sleep((int)Math.random()%2000+500);
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }

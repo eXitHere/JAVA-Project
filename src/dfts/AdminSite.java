@@ -83,9 +83,15 @@ public class AdminSite {
     private UserManager userMG;
     private User userSelected;
     private TableView tableSale = new TableView();
+    private BorderPane pane = new BorderPane();
     
-    public AdminSite(Stage primary) throws FileNotFoundException{
+    public void loadDBAll(){
         readDatabaseSale();
+        readDatabase();
+    }
+    
+    public void init(){
+        try{
         ScrollPane scrollPane = new ScrollPane(); //หน้าหลัก
         BorderPane userPane = new BorderPane();   //จัดการผู้ใช้งาน
         BorderPane stationPane = new BorderPane();   //จัดการผู้ใช้งาน
@@ -98,13 +104,11 @@ public class AdminSite {
         
         this.body.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
         this.body.initModality(Modality.APPLICATION_MODAL);
-        this.primary = primary;
         //read
-        readDatabase();
+        
         //addAdmin(new Pair<>("eiei","bibi"));
         //deleteAdmin(new Pair<>("eiei","bibi"));
 
-        BorderPane pane = new BorderPane();
         /*------------VBOX_Control--------------*/
         VBox vboxController = new VBox();
         vboxController.setPrefSize(220, 720);
@@ -202,12 +206,18 @@ public class AdminSite {
         
         pane.setLeft(vboxController);
         pane.setCenter(scrollPane);
-        this.scene = new Scene(pane,1280,720);
-        this.body.setScene(scene);
         this.body.setOnHidden((e)->{
             randomeColor.stop();
             primary.show();
         });
+        }
+        catch(Exception e){};
+    }
+    
+    public AdminSite(Stage primary){
+        this.primary = primary;
+        this.scene = new Scene(this.pane,1280,720);
+        this.body.setScene(scene);
     }
     
     private VBox vboxReadReview = new VBox();
@@ -703,9 +713,10 @@ public class AdminSite {
     }
     
     private ListView<Label> listUser;
+    private VBox vboxGetUserAll = new VBox();
     private VBox getUserAll() throws FileNotFoundException{
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        VBox vbox = new VBox();
+        
         this.userMG = new UserManager();
         this.listUser = new ListView<>();
         List<String> member = this.userMG.getPhoneAll();
@@ -760,9 +771,9 @@ public class AdminSite {
         }catch(FileNotFoundException e){e.printStackTrace();}
         // </editor-fold>;
         
-        vbox.getChildren().addAll(title,search,this.listUser);
-        vbox.setPadding(new Insets(10));
-        return vbox;
+        vboxGetUserAll.getChildren().addAll(title,search,this.listUser);
+        vboxGetUserAll.setPadding(new Insets(10));
+        return vboxGetUserAll;
         // </editor-fold>;
     }
     
@@ -983,10 +994,10 @@ public class AdminSite {
         // </editor-fold>;
     }
     
-    public void authen() throws FileNotFoundException{
+    public void authen(){
         //this.body.show();
-        
         // <editor-fold defaultstate="collapsed" desc="Compiled code">
+        try{
         this.login.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
         this.login.initModality(Modality.APPLICATION_MODAL);
         this.login.setResizable(false);
@@ -1048,6 +1059,7 @@ public class AdminSite {
         btnLogin.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
             btnLogin.setEffect(null);
         });
+        }catch(Exception e){};
         // </editor-fold>;
         
     }

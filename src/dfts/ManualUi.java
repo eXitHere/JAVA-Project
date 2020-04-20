@@ -163,20 +163,20 @@ public class ManualUi {
         this.listOFImageAll.add(new ArrayList<>());
         try{ // การจองตั่ว
            // System.out.println("dO");
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_1.jpg")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_2.jpg")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_3.jpg")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_4.jpg")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_1.png")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_2.png")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_3.png")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_4.png")))));
              // สมาชิก
-            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_1.jpg")))));
-            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_2.jpg")))));
+            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_1.png")))));
+            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_2.png")))));
              // ตารางเดินรถ
-            this.listOFImageAll.get(2).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page4_1.jpg")))));
+            this.listOFImageAll.get(2).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page4_1.png")))));
              // เกี่ยวกับสถานี
-            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_1.jpg")))));
-            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_2.jpg")))));
+            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_1.png")))));
+            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_2.png")))));
         }
-        catch(Exception e){e.printStackTrace();System.out.println("Catch!");};
+        catch(Exception e){e.printStackTrace();};
         
         this.listOFImageAll.forEach((var x) -> {
             x.forEach((y) -> {

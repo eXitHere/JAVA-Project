@@ -77,11 +77,11 @@ public class SaleManager {
         Clear duplicates ! from user sale.bin
         */
         //System.out.println("Size all " + this.useNotMember.size());
-        Set<String> primesWithoutDuplicates = new LinkedHashSet<String>(this.useNotMember);
+        Set<String> removeDuplicates = new LinkedHashSet<String>(this.useNotMember);
        
         this.useNotMember.clear();
        
-        this.useNotMember.addAll(primesWithoutDuplicates);
+        this.useNotMember.addAll(removeDuplicates);
         this.useNotMember.sort(Comparator.naturalOrder());
         //System.out.println("after remove : " + this.useNotMember.size());
         //System.out.println(userNotMember);
