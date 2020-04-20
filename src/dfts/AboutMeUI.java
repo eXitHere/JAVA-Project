@@ -74,20 +74,20 @@ public class AboutMeUI {
         catch(Exception e){System.out.println("bg not found!");}
         
         Thread autoEffect = new Thread(() -> {
-                try{
-                    while(true){
-                        for(int i=0;i<5;i++){
-                            this.listPlayer.get(i).setEffect(new MotionBlur());
-                            TimeUnit.MILLISECONDS.sleep(200);
-                            this.listPlayer.get(i).setEffect(null);
-                            TimeUnit.MILLISECONDS.sleep(300);
-                        }
+            try{
+                while(true){
+                    for(int i=0;i<5;i++){
+                        this.listPlayer.get(i).setEffect(new MotionBlur());
+                        TimeUnit.MILLISECONDS.sleep(200);
+                        this.listPlayer.get(i).setEffect(null);
+                        TimeUnit.MILLISECONDS.sleep(300);
                     }
-                }catch(Exception e){e.printStackTrace();};
-                Platform.runLater(() -> {
-                    
-                });
+                }
+            }catch(Exception e){e.printStackTrace();};
+            Platform.runLater(() -> {
+
             });
+        });
         autoEffect.start();
         
         primary.setOnHidden(e->{

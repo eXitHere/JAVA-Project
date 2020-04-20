@@ -27,6 +27,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -43,6 +44,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -982,8 +984,8 @@ public class AdminSite {
     }
     
     public void authen() throws FileNotFoundException{
-        this.body.show();
-        /*
+        //this.body.show();
+        
         // <editor-fold defaultstate="collapsed" desc="Compiled code">
         this.login.getIcons().add(new Image(new FileInputStream("src/resources/images/icon.png")));
         this.login.initModality(Modality.APPLICATION_MODAL);
@@ -1012,7 +1014,7 @@ public class AdminSite {
         btnLogin.setStyle("-fx-background-color: linear-gradient(#94D800, #78A300); -fx-text-fill: white;");
         
         pane.add(title, 0, 0,2,1);
-        pane.setHalignment(title, HPos.CENTER);
+        pane.setHalignment(title, HPos.CENTER.CENTER);
         pane.add(_user, 0, 1);
         pane.add(user,1,1);
         pane.add(_pass, 0, 2);
@@ -1047,7 +1049,7 @@ public class AdminSite {
             btnLogin.setEffect(null);
         });
         // </editor-fold>;
-        */
+        
     }
     
     public void show(){

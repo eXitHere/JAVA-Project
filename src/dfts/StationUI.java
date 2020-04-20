@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 /*
@@ -62,8 +63,10 @@ public class StationUI {
     private String phoneReview = ""; //Debug!
     private int starVal = 10;
     private boolean isSave = true;
+    private Stage primary;
     
-    public StationUI(List<String> ns) {
+    public StationUI(List<String> ns,Stage primary) {
+        this.primary = primary;
         this.nameStation = ns;
         this.old = this.nameStation.get(0);
         try{
@@ -191,6 +194,7 @@ public class StationUI {
             alert.setContentText("ขอบคุณสำหรับความคิดเห็นและความพึงพอใจ");
             alert.setHeaderText("ทางบริษัทจะนำข้อผิดพลาดและความคิดเห็นไปปรับปรุงการให้บริการต่อไป");
             alert.showAndWait();
+            alert.initOwner(this.primary);
             this.isSave = true;
             if(!this.phoneReview.equals(""))
                 writeOrUpdate(this.old,this.phoneReview,reviewField.getText(),starVal);
@@ -199,6 +203,7 @@ public class StationUI {
         btnCancel.setOnAction((e)->{
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("DFTS");
+            alert.initOwner(this.primary);
             alert.setContentText("ระบบจะพาท่านกลับไปยังหน้ารีวิวและออกจากระบบอัตโนมัติ");
             alert.setHeaderText("ต้องการปิดหน้านี้ใช่หรือไม่");
             Optional<ButtonType> result = alert.showAndWait();
@@ -386,6 +391,7 @@ public class StationUI {
             alert.setTitle("DFTS");
             alert.setContentText("ระบบจะพาท่านกลับไปยังหน้ารีวิว");
             alert.setHeaderText("ต้องการปิดหน้านี้ใช่หรือไม่");
+            alert.initOwner(this.primary);
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
                 this.isEdit = false;
@@ -467,6 +473,7 @@ public class StationUI {
             alert.setTitle("DFTS");
             alert.setContentText("ระบบจะไม่บันทึกข้อมูลของท่านในหน้านี้");
             alert.setHeaderText("ต้องการเปลี่ยนหน้ารีวิวใช่หรือไม่");
+            alert.initOwner(this.primary);
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
                 this.isSave = true;

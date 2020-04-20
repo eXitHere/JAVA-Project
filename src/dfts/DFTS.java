@@ -166,17 +166,29 @@ public class DFTS extends Application{
         
         btnHome.setOnAction((ActionEvent e) -> {
             //System.out.println("Home Clicked!");
+            mainPage.remove("main");
+            try{
+                mainPage.put("main",addHomePane());
+            }catch(Exception x){};
             this.mainBorder.setCenter(mainPage.get("main"));
         });
         
         btnMap.setOnAction((ActionEvent e) -> {
             //System.out.println("Map Clicked!");
+            mainPage.remove("station");
+            try{
+                mainPage.put("station",addStationPane());
+            }catch(Exception x){};
             this.mainBorder.setCenter(mainPage.get("station"));
             
         });
         
         btnTime.setOnAction((ActionEvent e) -> {
             //System.out.println("Time Clicked!");
+            mainPage.remove("time");
+            try{
+                mainPage.put("time",addTimePane());
+            }catch(Exception x){};
             this.mainBorder.setCenter(mainPage.get("time"));
         });
         
@@ -187,15 +199,26 @@ public class DFTS extends Application{
                 this.userUi.show();
             }
             catch(Exception ex){
-                System.out.println("Have somethinf wrong!\n"+ex);
+                System.out.println("Have something wrong!\n"+ex);
             }
             //this.mainBorder.setCenter(mainPage.get("time"));
         });
         
         btnAboutme.setOnAction((ActionEvent e) -> {
+            mainPage.remove("aboutme");
+            try{
+                mainPage.put("aboutme",addAboutMePane());
+            }catch(Exception x){};
             this.mainBorder.setCenter(mainPage.get("aboutme"));
         });
         
+        btnManual.setOnAction((e)->{
+            mainPage.remove("manual");
+            try{
+                mainPage.put("manual",addManualPane());
+            }catch(Exception x){};
+            this.mainBorder.setCenter(mainPage.get("manual"));
+        });
         //Drop Shadow
         // <editor-fold defaultstate="collapsed" desc="Event shadow">
         
@@ -275,6 +298,7 @@ public class DFTS extends Application{
     
     public BorderPane addHomePane() throws FileNotFoundException{ // Home page
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+        this.listInMain.clear();
         BorderPane body = new BorderPane();
         HBox subTop = new HBox();
         HBox subCenter = new HBox();
@@ -815,7 +839,7 @@ public class DFTS extends Application{
     }
     
     public BorderPane addStationPane(){  // Map Page
-        this.statusUi = new StationUI(this.nameStation);
+        this.statusUi = new StationUI(this.nameStation,this.mainStage);
         return statusUi.getBody();
     }
     
@@ -825,7 +849,15 @@ public class DFTS extends Application{
     
     public BorderPane addAboutMePane(){
         BorderPane body = new BorderPane();
+        this.aboutMeUi = new AboutMeUI(this.mainStage);
         body.setCenter(this.aboutMeUi.getBody());
+        return body;
+    }
+    
+    public BorderPane addManualPane() throws FileNotFoundException{
+        BorderPane body = new BorderPane();
+        ManualUi ui = new ManualUi(this.mainStage);
+        body.setCenter(ui.getBody());
         return body;
     }
     
@@ -835,6 +867,7 @@ public class DFTS extends Application{
         mainPage.put("station",addStationPane());
         mainPage.put("time",addTimePane());
         mainPage.put("aboutme",addAboutMePane());
+        mainPage.put("manual",addManualPane());
         //mainPane.setCenter(combo_box);
         return mainPane;
     }
@@ -877,6 +910,7 @@ public class DFTS extends Application{
     public void start(Stage stage) throws Exception {
         readData();
         mkdir();
+        this.mainStage = stage;
         this.load = new Loading(stage);
         this.aboutMeUi = new AboutMeUI(stage);
         this.timeTableUi = new TimeTableUi(this.nameStation,this.nameRailway,this.subRailway,this.timeRailway);
@@ -888,17 +922,17 @@ public class DFTS extends Application{
         stage.setTitle("DFTS");
         stage.setScene(mainScene);
         this.mainBorder.setCenter(mainPage.get("main")); // set main show!
-        //stage.show();
-        this.mainStage = stage;
+        stage.show();
+
         //mapTime.show(mapCode.getPath("Lobster","Avocado"));
         //stage.hide();
         
         
         /*-----Debug-----*/
-        try{
+        /*try{
             AdminSite admin = new AdminSite(this.mainStage);
            admin.authen(); 
-        }catch(Exception e){e.printStackTrace();};
+        }catch(Exception e){e.printStackTrace();};*/
     }
     
     
@@ -911,5 +945,12 @@ public class DFTS extends Application{
                 System.out.println("Failed to create directory!");
             }
         }
+    }
+    
+    
+    @Override
+    public void stop() throws Exception {
+        super.stop(); 
+        System.exit(0);
     }
 }

@@ -36,7 +36,7 @@ public class StationUIDrive extends Application{
         
         readData();
         //System.out.println(nameStation);
-        StationUI ui = new StationUI(nameStation);
+        StationUI ui = new StationUI(nameStation,stage);
         Scene scene = new Scene(ui.getBody(),1080,720);
         stage.setScene(scene);
         stage.show();

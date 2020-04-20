@@ -49,7 +49,7 @@ public class UserManager {
         try{
             this.listPhone.remove(phone);
             File file = new File(String.format("src/resources/data/%s.user", phone));  //creates a file instance  
-            file.deleteOnExit();
+            file.delete();
         }
         catch(Exception e){e.printStackTrace();}
     }
