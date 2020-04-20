@@ -13,7 +13,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -163,18 +162,19 @@ public class ManualUi {
         this.listOFImageAll.add(new ArrayList<>());
         this.listOFImageAll.add(new ArrayList<>());
         try{ // การจองตั่ว
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_1.png")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_2.png")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_3.png")))));
-            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_4.png")))));
+            System.out.println("dO");
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_1.jpg")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_2.jpg")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_3.jpg")))));
+            this.listOFImageAll.get(0).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page1_4.jpg")))));
              // สมาชิก
-            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_1.png")))));
-            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_2.png")))));
+            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_1.jpg")))));
+            this.listOFImageAll.get(1).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page2_2.jpg")))));
              // ตารางเดินรถ
-            this.listOFImageAll.get(2).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page4_1.png")))));
+            this.listOFImageAll.get(2).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page4_1.jpg")))));
              // เกี่ยวกับสถานี
-            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_1.png")))));
-            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_2.png")))));
+            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_1.jpg")))));
+            this.listOFImageAll.get(3).add(new ImageView(new Image(new FileInputStream(new File("src/resources/images/manual/page3_2.jpg")))));
         }
         catch(Exception e){e.printStackTrace();System.out.println("Catch!");};
         
@@ -208,7 +208,7 @@ public class ManualUi {
                     BackgroundRepeat.SPACE, 
                     BackgroundPosition.CENTER, 
                     BackgroundSize.DEFAULT)));
-            setLayout(btnPrev,new Pair<>(55.0,665.0));
+            setLayout(btnPrev,new Pair<>(65.0,660.0));
             Button btnNext = new Button();
             btnNext.setPrefSize(100, 100);
             btnNext.setId("btn");
@@ -218,7 +218,7 @@ public class ManualUi {
                     BackgroundRepeat.SPACE, 
                     BackgroundPosition.CENTER, 
                     BackgroundSize.DEFAULT)));
-            setLayout(btnNext,new Pair<>(1025.0,665.0));
+            setLayout(btnNext,new Pair<>(1015.0,660.0));
             
             btnClose.setOnAction((e)->{
                 switchPane();
