@@ -467,14 +467,14 @@ public class MapAndTime {
         int minTime = 99999999;
         double maxRate = 0;
         //System.out.println("");
-        for(var x : this.time){
-            int sum = x.stream().reduce(0, (a, b) -> a + b);
+        for(var x : this.time){     //List<List<int>>
+            int sum = x.stream().reduce(0, (a, b) -> a + b);    //find sum
             if(sum < minTime){
                 minTime = sum;
                 this.indexMinTime = this.time.indexOf(x);
             }
         }
-        for(var x : this.way){
+        for(var x : this.way){  //List<list<int>> เลขของสถานี
             int sumRate = 0;
             for(var y : x){
                 sumRate += this.Rating.get(y);

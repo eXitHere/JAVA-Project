@@ -85,9 +85,17 @@ public class AdminSite {
     private TableView tableSale = new TableView();
     private BorderPane pane = new BorderPane();
     
+    private List<String> nameStation = new ArrayList<>();
+    private List<String> nameRailway = new ArrayList<>();
+    private final List<List<String>> subRailway = new ArrayList<>();
+    private final List<List<String>> timeRailway = new ArrayList<>();
+    
+    private final MyMap<Integer,String> mapName = new MyMap<>();
+    
     public void loadDBAll(){
         readDatabaseSale();
         readDatabase();
+        readData();
     }
     
     public void init(){
@@ -305,7 +313,7 @@ public class AdminSite {
         VBox AllReview = new VBox();
         scrollpane.setContent(AllReview);
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        try(FileReader in = new FileReader(String.format("src/resources/data/%s.review",name));){
+        try(FileReader in = new FileReader(String.format("src/resources/data/%s.review",name));){   //โหลดไฟล์
             while ((ch=in.read())!=-1){
                 if(ch=='|'){
                     //System.out.println(temp);
@@ -355,18 +363,18 @@ public class AdminSite {
         catch(Exception e){}
     }
     
-    
-    private ListView<Label> listStation;
+    List<String> station = new ArrayList<>(); 
+    private ListView<Label> listStation;  //label
     private ObservableList<Label> entriesStation = FXCollections.observableArrayList();
     private VBox getStationAll(){
         this.vboxStation.setPadding(new Insets(20));
         VBox vbox = new VBox();
         File file = new File("src/resources/data/");
-        List<String> listStation = new ArrayList<>();
+        List<String> listStation = new ArrayList<>();   //list of station
         File[] files = file.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name.toLowerCase().endsWith(".station")){
+                if(name.toLowerCase().endsWith(".station")){    //  หาไฟล์.station
                     return true;
                 } else {
                     return false;
@@ -375,7 +383,9 @@ public class AdminSite {
         });
         for(File f:files){
             String[] name = ((String)f.getName()).split(".station");
-            listStation.add(name[0]);
+            listStation.add(name[0]);    
+            this.station.add(name[0]);
+         //   System.out.println("NAme "+name[0]);
         }
         
         this.listStation = new ListView<>();
@@ -423,6 +433,9 @@ public class AdminSite {
         // </editor-fold>;
         
         Button update = new Button("อัพเดทข้อมูล");
+        update.setOnAction((k)->{
+            updateFileStation();
+        });
         update.setPrefSize(200, 60);
         try{update.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));}catch(Exception e){}
         update.setStyle("-fx-background-color: linear-gradient(#272945, #1B1E3A);; -fx-text-fill: white; -fx-border-color: transparent; -fx-border-width: 0;");
@@ -1066,5 +1079,134 @@ public class AdminSite {
     
     public void show(){
         this.body.show();
+    }
+    
+    private void updateFileStation(){
+       List<Integer> countList = new ArrayList<Integer>();
+       int tempSum = 0;
+       int _count =0;
+       for(String x:this.station)
+       {
+             int ch;
+             String temp="";
+             try(FileReader in = new FileReader(String.format("src/resources/data/%s.review",x));){
+                 while ((ch=in.read())!=-1){
+                     if(ch=='|'){
+                        String[] spilt = temp.split("___");
+                        tempSum+=Integer.parseInt(spilt[2]);
+                        _count++;
+                    }
+                     else{
+                         temp+=(char)(ch);
+                     }
+                 }    
+             }
+             catch(Exception e){}
+             if(_count==0)
+                 countList.add(10);
+             else 
+                 countList.add((int)tempSum/_count);
+             
+             _count=0;
+             tempSum=0;
+        }
+        
+        for(int i=0;i<32;i++)
+        {
+            this.counts[i]=0;
+        }
+        
+        this.saleMG.getListSale().forEach((x)->{
+            reverseMap(x.getStart(), x.getStop(),x.getCount(),x.getPrice());
+           // System.out.println(x.getPrice());
+        });
+        
+        System.out.println("total : "+total);
+        for(int i=0;i<32;i++)
+        {
+     //       System.out.println(mapName.get(i) + " " + this.counts[i] + " "+String.format("%.2f",(double)this.counts[i]/total*100));
+        
+            try(FileInputStream fi = new FileInputStream(new File(String.format("src/resources/data/%s.station",mapName.get(i)))); ObjectInputStream oi = new ObjectInputStream(fi)){
+                Station pr1;
+                pr1 = (Station) oi.readObject();
+                pr1.setRating(countList.get(i));
+                pr1.setPersen((double)this.counts[i]/total*100);
+
+                FileOutputStream f = new FileOutputStream(new File(String.format("src/resources/data/%s.station", mapName.get(i))));
+                ObjectOutputStream o = new ObjectOutputStream(f);
+                o.writeObject(pr1); 
+                o.close();
+                f.close();
+        
+            }catch(Exception e){
+            }
+        }
+       
+//         for(int y:countList)
+//        {
+//            System.out.println(y);
+//        }
+    
+    }
+   
+   private int[] counts = new int[32];  
+   private int total = 0;
+    
+    private void reverseMap(String start,String stop,int count,Double price){
+       
+        
+       MapCode mc = new MapCode(nameStation,nameRailway,subRailway,timeRailway);
+       var path = mc.getPath(start, stop);
+       
+       for(var a : path.getValue()){
+           if(price.equals(a*count) || price.equals(a*count*0.95))
+           {
+//               System.out.println("found");
+               int index= path.getValue().indexOf(a);
+               for(var b: path.getKey().getKey().get(index)){
+//                    System.out.print(this.mapName.get(b) );
+                    this.counts[b]++;
+                    this.total++;
+               }
+               break;
+           }
+       }    
+       
+//       System.out.println(mc.getPath(start, stop).getKey().getKey());
+//       System.out.println(mc.getPath(start, stop).getKey().getValue());
+//       System.out.println(mc.getPath(start, stop).getValue());
+    }
+
+    private void readData(){
+        // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+        String line;
+        List<String> bufReturn;
+        bufReturn = new ArrayList<>();
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/resources/data/", "data.txt") , Charset.forName("UTF-8"))) {
+            while ((line = reader.readLine()) != null ) {
+              //separate all csv fields into string array
+                //String[] lineVariables = line.split(","); 
+                //System.out.println(Arrays.toString(lineVariables));
+                bufReturn.add(line);
+            }
+        }catch (IOException e) {
+            System.err.println(e);
+        }
+        nameStation = Arrays.asList(bufReturn.get(0).split(","));
+        nameRailway = Arrays.asList(bufReturn.get(1).split(","));
+        int lastIndex = 2;
+        for (String nameRailway1 : nameRailway) {
+            subRailway.add(Arrays.asList(bufReturn.get(lastIndex).split(",")));
+            lastIndex++;
+        }
+        for (String nameRailway1 : nameRailway) {
+            timeRailway.add(Arrays.asList(bufReturn.get(lastIndex).split(",")));
+            lastIndex++;
+        }
+        
+        this.nameStation.forEach((n) -> {
+            this.mapName.put(this.nameStation.indexOf(n), n);
+        });
+        //</editor-fold>;
     }
 }
