@@ -1,4 +1,4 @@
-package dfts;
+ package dfts;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -47,7 +47,7 @@ public class SaleManager {
             String[] temp = x.split("_");
             this.listSale.add(new Sale(temp[0], temp[1], temp[2], Integer.parseInt(temp[3]), temp[4], Double.parseDouble(temp[5])));
             Sale now = this.listSale.get(this.listSale.size()-1);
-            
+            System.out.println(now);
             if(isMember(now.getPhone())){ //การเป็นสมาชิก  //นับยอดรายเดือนภายใน 1 ปี _
                 _isMember++;
                 useInMont[0][new Date(now.getDate()).getMonth()]++;
