@@ -76,7 +76,7 @@ public class AdminSite {
     private Stage body = new Stage();
     private Scene scene;
     private Stage primary;
-    private String nameDisplay="Thana";
+    private String nameDisplay="ADMIN";
     private List<String> btnName = Arrays.asList("Dashboard","จัดการผู้ใช้งาน","จัดการสถานี");
     private SaleManager saleMG;
     private GridPane gridUserDisplay = new GridPane();
@@ -434,7 +434,15 @@ public class AdminSite {
         
         Button update = new Button("อัพเดทข้อมูล");
         update.setOnAction((k)->{
-            updateFileStation();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("DFTS");
+            alert.initOwner(this.body);
+            alert.setContentText("การอัพเดทข้อมูลจะใช้เวลาขึ้นอยู่กับปริมาณข้อมูล กรุณารอจนกว่าจะมีหน้าต่างยืนยัน");
+            alert.setHeaderText("ต้องการอัพเดทข้อมูลใช่หรือไม่");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                updateFileStation();
+            }
         });
         update.setPrefSize(200, 60);
         try{update.setFont(Font.loadFont(new FileInputStream("src/resources/fonts/PrintAble4U_Bold.ttf"), 18));}catch(Exception e){}
@@ -558,7 +566,8 @@ public class AdminSite {
         
         btnSave.setOnAction((e)->{  
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("DFTS REGISTER");
+            alert.setTitle("DFTS");
+            alert.initOwner(this.body);
             try{
                 alert.setContentText("เบอร์โทร " + this.userSelected.getPhoneNumber());
                 alert.setHeaderText("ต้องการบันทึกข้อมูล");
@@ -729,7 +738,6 @@ public class AdminSite {
     private VBox vboxGetUserAll = new VBox();
     private VBox getUserAll() throws FileNotFoundException{
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        
         this.userMG = new UserManager();
         this.listUser = new ListView<>();
         List<String> member = this.userMG.getPhoneAll();
@@ -1008,6 +1016,7 @@ public class AdminSite {
     }
     
     public void authen(){
+        //addAdmin(new Pair<String,String>("dfts","passwordadmin"));
         //this.body.show();
         // <editor-fold defaultstate="collapsed" desc="Compiled code">
         try{
@@ -1057,7 +1066,7 @@ public class AdminSite {
             for(var x : this.userAdmin){
                 if(x.getKey().equals(user.getText()) && x.getValue().equals(pass.getText())){
                     show();
-                    nameDisplay = x.getKey();
+                    this.nameDisplay = x.getKey();
                     this.login.hide();
                     this.primary.hide();
                     break;
@@ -1121,11 +1130,9 @@ public class AdminSite {
            // System.out.println(x.getPrice());
         });
         
-        System.out.println("total : "+total);
-        for(int i=0;i<32;i++)
-        {
+        //System.out.println("total : "+total);
+        for(int i=0;i<32;i++){
      //       System.out.println(mapName.get(i) + " " + this.counts[i] + " "+String.format("%.2f",(double)this.counts[i]/total*100));
-        
             try(FileInputStream fi = new FileInputStream(new File(String.format("src/resources/data/%s.station",mapName.get(i)))); ObjectInputStream oi = new ObjectInputStream(fi)){
                 Station pr1;
                 pr1 = (Station) oi.readObject();
@@ -1146,18 +1153,24 @@ public class AdminSite {
 //        {
 //            System.out.println(y);
 //        }
-    
+        
+        /*
+        Complete!
+        */
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("DFTS");
+        alert.initOwner(this.body);
+        alert.setContentText(":)");
+        alert.setHeaderText("การอัพเดทข้อมูลเสร็จสิ้น");
+        alert.showAndWait();
     }
    
    private int[] counts = new int[32];  
    private int total = 0;
     
     private void reverseMap(String start,String stop,int count,Double price){
-       
-        
        MapCode mc = new MapCode(nameStation,nameRailway,subRailway,timeRailway);
        var path = mc.getPath(start, stop);
-       
        for(var a : path.getValue()){
            if(price.equals(a*count) || price.equals(a*count*0.95))
            {
