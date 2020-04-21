@@ -38,7 +38,7 @@ public class ReviewGenerate {
         LocalDate randomDate = between(_start, _end);
         ZoneId defaultZoneId = ZoneId.systemDefault();
         for(var x : nameStation){
-        for(int i=0;i<10;i++){
+        for(int i=0;i<3;i++){
             Date date = Date.from(randomDate.atStartOfDay(defaultZoneId).toInstant());
             SaveToDB(String.format("%s___%s___%s___%s|", listPhone.get(Math.abs(random.nextInt())%listPhone.size()),
                     comment.get(Math.abs(random.nextInt())%comment.size()),
@@ -46,7 +46,7 @@ public class ReviewGenerate {
                     dateFormat.format(date))
                     ,x);
         }
-        for(int i=0;i<20;i++){
+        for(int i=0;i<5;i++){
             Date date = Date.from(randomDate.atStartOfDay(defaultZoneId).toInstant());
             SaveToDB(String.format("%s___%s___%s___%s|", listPhone.get(Math.abs(random.nextInt())%listPhone.size()),
                     comment.get(Math.abs(random.nextInt())%comment.size()),
@@ -54,7 +54,7 @@ public class ReviewGenerate {
                     dateFormat.format(date))
                     ,x);
         }
-        for(int i=0;i<10;i++){
+        for(int i=0;i<5;i++){
             Date date = Date.from(randomDate.atStartOfDay(defaultZoneId).toInstant());
             SaveToDB(String.format("%s___%s___%s___%s|", listPhone.get(Math.abs(random.nextInt())%listPhone.size()),
                     comment.get(Math.abs(random.nextInt())%comment.size()),
